@@ -29,23 +29,28 @@ const Page = () => {
       }
 
     return(
-        <div className="h-screen w-screen flex">
-            <div className=" flex-1 flex justify-center items-center bg-slate-5">
-                <div className="bg-primary rounded-lg min-w-[40%] pb-20">
-                    <div className="w-full bg-secondary flex items-center justify-center my-4">
-                        <img src="/logo.png" alt="logo do Senac" className="h-auto w-32 p-0"/>
+        <div className="h-screen w-screen flex justify-center items-center">
+            <div className="flex bg-slate-100 justify-center items-center h-[450px] w-[60%] rounded-lg shadow-xl">
+                <div className="bg-primary flex justify-center items-center flex-1 h-full rounded-l-lg py-5 px-10">
+                    <img src="/logo.png" alt="logo do senac" className="h-auto w-48"/>
+                </div>
+
+                <div className="flex flex-1 flex-col  py-10 px-10">
+                    <div className="self-start mb-5">
+                        <h2 className="text-2xl font-bold">Entrar</h2>
+                        <p className="text-sm">Acesse sua conta por aqui</p>
                     </div>
 
                     <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8  w-full px-5 text-center">
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
                             <FormField
                                 control={form.control}
                                 name="username"
                                 render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel className="text-white text-lg">Usuário</FormLabel>
+                                    <FormLabel className="text-lg">Usuário</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="Usuário" {...field} className="min-w-[250px]"/>
+                                        <Input placeholder="Usuário" {...field} className="rounded-full bg-gray-300"/>
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -55,25 +60,24 @@ const Page = () => {
                                 control={form.control}
                                 name="password"
                                 render={({ field }) => (
-                                <FormItem className="text-center">
-                                    <FormLabel className="text-lg text-white">Senha</FormLabel>
+                                <FormItem>
+                                    <FormLabel className="text-lg">Senha</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="senha" {...field} />
+                                        <Input placeholder="senha" {...field} className="rounded-full bg-gray-300"/>
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
                                 )}
                             />
-                            <Button type="submit" variant='secondary' className="font-bold">Entrar</Button>
+                            <div className="text-center">
+                                <Button type="submit" variant='secondary' className="font-bold text-center">Entrar</Button>
+                            </div>
+                            
                         </form>
                     </Form>
-                    
                 </div>
             </div>
 
-            <div className=" flex-1 bg-right-top bg-cover  bg-[url(/login.png)]">
-
-            </div>
         </div>
     )
 }
