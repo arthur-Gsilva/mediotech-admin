@@ -2,12 +2,11 @@ import { IoMdInformationCircleOutline } from "react-icons/io"
 import { Card, CardContent, CardHeader } from "../ui/card"
 import { TooltipContent, TooltipProvider, TooltipTrigger } from "@radix-ui/react-tooltip"
 import { Tooltip } from "../ui/tooltip"
-import { Button } from "../ui/button"
 
 export const Alunobox = () => {
     return(
-        <Card>
-            <CardHeader className="flex flex-row gap-6">
+        <Card className="text-center">
+            <CardHeader className="flex flex-row gap-2">
                 <div>Alunos</div>
                 <TooltipProvider>
                     <Tooltip>
@@ -24,7 +23,7 @@ export const Alunobox = () => {
                     </Tooltip>
                 </TooltipProvider>
             </CardHeader>
-            <CardContent className="text-center text-xl font-bold">18</CardContent>
+            <CardContent className="text-center md:text-xl font-bold">18</CardContent>
         </Card>
     )
 }

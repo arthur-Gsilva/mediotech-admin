@@ -8,16 +8,23 @@ import { PiShirtFoldedFill } from "react-icons/pi";
 import { HiOutlineSpeakerphone } from "react-icons/hi";
 
 import { usePathname, useRouter } from "next/navigation";
+import { useContext } from "react";
+import { MenuContext } from "@/contexts/MenuContext";
 
 export const Navbar = () => {
 
     const pathname = usePathname()
     const router = useRouter()
 
+    const menuCtx = useContext(MenuContext)
+
     return(
-        <div className="bg-primary w-auto min-h-screen text-white p-5">
-            <div className="mb-10 text-2xl pl-2">
-                Senac
+        <div className="bg-primary w-auto min-h-screen delay-300 text-white p-5 absolute top-0 bottom-0 left-[-500px] z-10 md:static"
+        style={{left: menuCtx?.menu === true ? '0' : ''}}
+        
+        >
+            <div className="mb-10 text-2xl pl-2 flex items-center justify-between">
+                Senac <span className="text-red-500 cursor-pointer md:hidden" onClick={() => menuCtx?.setMenu(false)}>X</span>
             </div>
 
 
