@@ -3,7 +3,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MdChecklist } from "react-icons/md";
 import { MdOutlineFilterAlt } from "react-icons/md";
-import { IoMdInformationCircleOutline } from "react-icons/io";
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 import { IoIosSearch } from "react-icons/io";
