@@ -15,10 +15,10 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <body  suppressHydrationWarning>
+      <body  suppressHydrationWarning className="antialiased ">
         <div className="flex">
           <Navbar />
-          <div className="w-full">
+          <div className="w-full flex flex-col items-center overflow-hidden">
               <Header />
               {children}
           </div>

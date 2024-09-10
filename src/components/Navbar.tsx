@@ -28,7 +28,7 @@ export const Navbar = () => {
             </div>
 
 
-            <nav className="[&>div]:flex [&>div]:gap-4 [&>div]:items-center [&>div]:text-xl [&>div]:cursor-pointer [&>div:hover]:bg-secondary [&>div]:p-2 [&>div]:rounded-full flex flex-col gap-6">
+            <nav className="[&>div]:flex [&>div]:gap-4 [&>div]:items-center [&>div]:text-xl [&>div]:cursor-pointer [&>div:hover]:bg-secondary [&>div]:p-2 [&>div]:rounded-lg flex flex-col gap-6">
 
                 <div style={{backgroundColor: pathname === '/dashboards' ? '#F6A10A' : ''}} onClick={() => router.push('/dashboards')}>
                     <VscGraph />

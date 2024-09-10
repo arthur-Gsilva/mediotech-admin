@@ -12,7 +12,7 @@ export const Header = () => {
     const menuCtx = useContext(MenuContext)
 
     return(
-        <div className="bg-gray-300 w-full h-14 flex justify-center items-center md:text-xl font-bold capitalize mb-6 relative">
+        <div className="bg-darkbrown text-white w-full h-14 flex justify-center items-center md:text-xl font-bold capitalize mb-6 relative">
             <div className="absolute top-[18px] left-3 text-xl cursor-pointer md:hidden">
                 <AiOutlineMenu onClick={() => menuCtx?.setMenu(true)}/>
             </div>

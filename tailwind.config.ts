@@ -28,6 +28,12 @@ const config: Config = {
   				DEFAULT: '#F6A10A',
   				foreground: 'hsl(var(--secondary-foreground))'
   			},
+			brown: {
+				DEFAULT: '#945911'
+			},
+			darkbrown:{
+				DEFAULT: '#633b0c'
+			},
   			muted: {
   				DEFAULT: 'hsl(var(--muted))',
   				foreground: 'hsl(var(--muted-foreground))'
