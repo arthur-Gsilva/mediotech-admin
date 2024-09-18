@@ -31,9 +31,9 @@ const Page = () => {
 
 
     const anoData = [
-        { ano: '1º', alunos: 277},
-        { ano: '2º', alunos: 135},
-        { ano: '3º', alunos: 169},
+        { ano: '1º ano', alunos: 277},
+        { ano: '2º ano', alunos: 135},
+        { ano: '3º ano', alunos: 169},
     ]
 
     const anoConfig = {
@@ -107,7 +107,7 @@ const Page = () => {
                 <div className="flex flex-col gap-4 items-center sm:col-span-2 lg:col-span-1">
                     <Card className="w-[60%] sm:w-full">
                         <CardHeader>
-                            <CardTitle className="text-base">Qtde de Alunos por ano</CardTitle>
+                            <CardTitle className="text-base">Qtde de Alunos por faixa etária</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <ChartContainer config={etariaConfig} className="min-h-[200px] w-full">
