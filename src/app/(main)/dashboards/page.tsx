@@ -8,6 +8,7 @@ import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 import { IoIosSearch } from "react-icons/io";
 import { FaPlus } from "react-icons/fa6";
 import { Alunobox } from "@/components/dashboards/Alunobox";
+import { MiddleArea } from "@/components/dashboards/MiddleArea";
 
 
 const Page = () => {
@@ -100,8 +101,7 @@ const Page = () => {
                         <Alunobox title="Professores" number={12}/>
                         <Alunobox title="disciplinas" number={9}/>
                     </div>
-                    <div className="bg-primary h-full w-full min-h-[150px] rounded-xl">
-                    </div>
+                    <MiddleArea />
                 </div>
 
                 <div className="flex flex-col gap-4 items-center sm:col-span-2 lg:col-span-1">
@@ -128,14 +128,14 @@ const Page = () => {
                     </Card>
                     <Card className="w-[60%] sm:w-full">
                         <CardHeader>
-                            <CardTitle className="text-base">Qtde de Alunos por faixa etária</CardTitle>
+                            <CardTitle className="text-base">Qtde de Alunos por ano</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <ChartContainer config={anoConfig} className="min-h-[200px] w-full">
                             <BarChart accessibilityLayer  data={anoData}>
                                 <CartesianGrid vertical={false}/>
                                 <XAxis
-                                    dataKey='idade'
+                                    dataKey='ano'
                                     tickLine={false}
                                     tickMargin={10}
                                     axisLine={false}

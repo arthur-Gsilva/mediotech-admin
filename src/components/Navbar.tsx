@@ -6,6 +6,8 @@ import { LiaChalkboardTeacherSolid } from "react-icons/lia";
 import { PiStudent } from "react-icons/pi";
 import { PiShirtFoldedFill } from "react-icons/pi";
 import { HiOutlineSpeakerphone } from "react-icons/hi";
+import { BsGear } from "react-icons/bs";
+import { RxExit } from "react-icons/rx";
 
 import { usePathname, useRouter } from "next/navigation";
 import { useContext } from "react";
@@ -17,6 +19,8 @@ export const Navbar = () => {
     const router = useRouter()
 
     const menuCtx = useContext(MenuContext)
+
+    
 
     return(
         <div className="bg-primary w-auto min-h-screen delay-300 text-white p-5 absolute top-0 bottom-0 left-[-500px] z-10 md:static"
@@ -55,6 +59,18 @@ export const Navbar = () => {
                     Comunicados
                 </div>
             </nav>
+
+            <div className="mt-16">
+                <div className="h-1 w-full bg-secondary mb-4"></div>
+                <div className="flex gap-4 items-center text-xl cursor-pointer p-2 rounded-lg hover:bg-secondary">
+                    <BsGear />
+                    Configurações
+                </div>
+                <div className="flex gap-4 items-center text-xl cursor-pointer p-2 rounded-lg hover:bg-secondary">
+                    <RxExit />
+                    Sair
+                </div>
+            </div>
         </div>
     )
 }
