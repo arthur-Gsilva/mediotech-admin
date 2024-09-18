@@ -7,12 +7,16 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
+import {  useRouter } from "next/navigation";
+
 const formSchema = z.object({
     username: z.string().min(2).max(50),
     password: z.string().min(8, 'A senha tem no minimo 8 digitos')
 })
 
 const Page = () => {
+
+    const router = useRouter()
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -23,8 +27,7 @@ const Page = () => {
     })
 
     function onSubmit(values: z.infer<typeof formSchema>) {
-        // Do something with the form values.
-        // ✅ This will be type-safe and validated.
+        router.push('/dashboards')
         console.log(values)
       }
 
