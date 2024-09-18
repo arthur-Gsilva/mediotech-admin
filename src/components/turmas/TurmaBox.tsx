@@ -2,11 +2,10 @@ import { Turma } from "@/types/Turma"
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
 
 type Props = {
-    data: Turma,
-    anoFiltro: string
+    data: Turma
 }
 
-export const TurmaBox = ({ data, anoFiltro }: Props) => {
+export const TurmaBox = ({ data }: Props) => {
     return(
         <Card className="pb-5">
             <CardHeader className="flex flex-row items-center justify-between gap-10">

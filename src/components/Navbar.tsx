@@ -20,7 +20,10 @@ export const Navbar = () => {
 
     const menuCtx = useContext(MenuContext)
 
-    
+    const redirect = (path: string) => {
+        router.push(`/${path}`)
+        menuCtx?.setMenu(false)
+    }
 
     return(
         <div className="bg-primary w-auto min-h-screen delay-300 text-white p-5 absolute top-0 bottom-0 left-[-500px] z-10 md:static"
@@ -34,27 +37,27 @@ export const Navbar = () => {
 
             <nav className="[&>div]:flex [&>div]:gap-4 [&>div]:items-center [&>div]:text-xl [&>div]:cursor-pointer [&>div:hover]:bg-secondary [&>div]:p-2 [&>div]:rounded-lg flex flex-col gap-6">
 
-                <div style={{backgroundColor: pathname === '/dashboards' ? '#F6A10A' : ''}} onClick={() => router.push('/dashboards')}>
+                <div style={{backgroundColor: pathname === '/dashboards' ? '#F6A10A' : ''}} onClick={() => redirect('dashboards')}>
                     <VscGraph />
                     Dashboards
                 </div>
-                <div style={{backgroundColor: pathname === '/turmas' ? '#F6A10A' : ''}} onClick={() => router.push('/turmas')}>
+                <div style={{backgroundColor: pathname === '/turmas' ? '#F6A10A' : ''}} onClick={() => redirect('turmas')}>
                     <HiOutlineUserGroup />
                     Turmas
                 </div>
-                <div style={{backgroundColor: pathname === '/disciplinas' ? '#F6A10A' : ''}} onClick={() => router.push('/disciplinas')}>
+                <div style={{backgroundColor: pathname === '/disciplinas' ? '#F6A10A' : ''}} onClick={() => redirect('disciplinas')}>
                     <LiaChalkboardTeacherSolid />
                     Disciplinas
                 </div>
-                <div style={{backgroundColor: pathname === '/estudantes' ? '#F6A10A' : ''}} onClick={() => router.push('/estudantes')}>
+                <div style={{backgroundColor: pathname === '/estudantes' ? '#F6A10A' : ''}} onClick={() => redirect('estudantes')}>
                     <PiStudent />
                     Estudantes
                 </div>
-                <div style={{backgroundColor: pathname === '/professores' ? '#F6A10A' : ''}} onClick={() => router.push('/professores')}>
+                <div style={{backgroundColor: pathname === '/professores' ? '#F6A10A' : ''}} onClick={() => redirect('professores')}>
                     <PiShirtFoldedFill />
                     Professores
                 </div>
-                <div style={{backgroundColor: pathname === '/comunicados' ? '#F6A10A' : ''}} onClick={() => router.push('/comunicados')}>
+                <div style={{backgroundColor: pathname === '/comunicados' ? '#F6A10A' : ''}} onClick={() => redirect('comunicados')}>
                     <HiOutlineSpeakerphone />
                     Comunicados
                 </div>

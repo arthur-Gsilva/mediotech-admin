@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react';
-import { PieChart, Pie, Legend, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { PieChart, Pie, ResponsiveContainer, Cell } from 'recharts';
 
 const data01 = [
     { name: 'manhã', value: 500 },
@@ -12,6 +12,11 @@ const data02 = [
     { name: 'menina', value: 197 },
 ];
 
+type data = {
+    name: string,
+    value: number
+}
+
 const COLORS01 = ['#0077b6', '#92bfe8']
 const COLORS02 = ['#054C82', '#F6A10A']
 
@@ -20,7 +25,7 @@ export const MiddleArea = () => {
     const [turno, setTurno] = useState<number | null>(null);
     const [genero, setGenero] = useState<number | null>(null);
 
-    const onTurnoEnter = (data: any, index: number) => {
+    const onTurnoEnter = (data: data) => {
         setTurno(data.value)
     };
 
@@ -28,7 +33,7 @@ export const MiddleArea = () => {
         setTurno(null)
     };
 
-    const onGeneroEnter = (data: any, index: number) => {
+    const onGeneroEnter = (data: data) => {
         setGenero(data.value)
     };
 
@@ -63,7 +68,7 @@ export const MiddleArea = () => {
                                     <Cell
                                         key={`cell-${index}`}
                                         fill={COLORS01[index % COLORS01.length]}
-                                        onMouseEnter={() => onTurnoEnter(entry, index)}
+                                        onMouseEnter={() => onTurnoEnter(entry)}
                                     />
                                 ))}
                             </Pie>
@@ -102,7 +107,7 @@ export const MiddleArea = () => {
                                     <Cell
                                         key={`cell-${index}`}
                                         fill={COLORS02[index % COLORS02.length]}
-                                        onMouseEnter={() => onGeneroEnter(entry, index)}
+                                        onMouseEnter={() => onGeneroEnter(entry)}
                                     />
                                 ))}
                             </Pie>
