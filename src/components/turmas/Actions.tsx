@@ -19,8 +19,8 @@ export const Actions = ({ value, setValue }: Props) => {
     
 
     return(
-        <div className="flex flex-col gap-4 items-center justify-between">
-            <div className="flex flex-col items-center gap-4">
+        <div className="flex flex-col gap-4 items-center justify-between md:flex-row">
+            <div className="flex flex-col items-center gap-4 md:flex-row">
                 <div className="border-2 border-brown flex items-center rounded-md px-1">
                     <input type="text" className="outline-none bg-transparent flex-1 text-gray-950"/>
                     <IoIosSearch />

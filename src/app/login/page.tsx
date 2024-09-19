@@ -66,7 +66,7 @@ const Page = () => {
                                 <FormItem>
                                     <FormLabel className="text-lg">Senha</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="senha" {...field} className="rounded-full bg-gray-300"/>
+                                        <Input placeholder="senha" type="password" {...field} className="rounded-full bg-gray-300"/>
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>

@@ -3,5 +3,7 @@ export type Turma = {
     estudantes: number,
     ano: string,
     periodo: number,
-    turno: string
+    turno: string,
+    curso: 'Desenvolvimento de sistemas' | 'Logística'
+    representante?: string
 }
