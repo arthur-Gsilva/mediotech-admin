@@ -12,8 +12,8 @@ const Page = () => {
 
 
     return(
-        <main className="px-5">
-            <Card className="max-w-[300px] sm:max-w-[initial]">
+        <main className="px-5 w-full">
+            <Card className="">
                 <CardHeader>
                     <CardTitle>Lista de Alunos</CardTitle>
                     <div className="h-1 w-full bg-primary"></div>
