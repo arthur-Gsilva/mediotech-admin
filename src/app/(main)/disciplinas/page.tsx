@@ -1,6 +1,37 @@
+'use client'
+
+import { DisciBox } from "@/components/disciplinas/DisciBox"
+import { Actions } from "@/components/turmas/Actions"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Disciplinas } from "@/data/Disciplinas"
+import { useState } from "react"
+
 const Page = () => {
+
+    const [value, setValue] = useState('')
+
     return(
-        <div>Disciplinas</div>
+        <main className="px-5 w-full">
+            <Card className="">
+                <CardHeader>
+                    <CardTitle>Lista de Disciplinas</CardTitle>
+                    <div className="h-1 w-full bg-primary"></div>
+                </CardHeader>
+                <CardContent>
+                    <Actions value={value} setValue={setValue}/>
+
+                    <div className="mt-2">Total de Disciplinas: {Disciplinas.length}</div>
+
+                    <div className="grid grid-cols-1 mt-5 gap-6 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+                    {Disciplinas
+                        .map((item) => (
+                            <DisciBox key={item.id} data={item} />
+                        ))
+                    }
+                    </div>
+                </CardContent>
+            </Card>
+        </main>
     )
 }
 

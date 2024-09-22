@@ -21,7 +21,7 @@ const Page = () => {
                 <CardContent>
                     <Actions value={value} setValue={setValue}/>
 
-                    <div className="mt-2">Total de Alunos: {Estudantes.length}</div>
+                    <div className="my-2 font-semibold text-xl">Total de Alunos: {Estudantes.length}</div>
 
                     <Table>
                         <TableHeader>

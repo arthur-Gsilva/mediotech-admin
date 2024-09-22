@@ -10,9 +10,9 @@ type Props = {
 export const TurmaModal = ({ isOpen, onClose, data }: Props) => {
     return(
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="sm:max-w-lg">
+            <DialogContent className="w-[80vw] max-w-none">
                 <DialogHeader>
-                    <DialogTitle>{data.ano} ({data.periodo})</DialogTitle>
+                    <DialogTitle className="font-bold text-2xl">{data.ano} ({data.periodo})</DialogTitle>
                     <div className="h-[2px] w-full bg-primary"></div>
                 </DialogHeader>
                 <div className='flex flex-col gap-2'>
@@ -24,7 +24,7 @@ export const TurmaModal = ({ isOpen, onClose, data }: Props) => {
                 </div>
 
                 <div className="mt-10">
-                    <div>Alunos Alocados: 20</div>
+                    <div className="font-bold text-md">Alunos Alocados: 20</div>
                     <div className="h-[2px] w-full bg-primary my-2"></div>
                     <div className="flex flex-wrap gap-4">
                         <div className="text-white bg-primary p-2 rounded-md cursor-pointer">Paulo D.</div>
