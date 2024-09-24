@@ -4,9 +4,20 @@ import { Actions } from "@/components/estudantes/Actions"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Estudantes } from "@/data/Estudantes"
-import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
 
 const Page = () => {
+
+    const router = useRouter();
+
+    useEffect(() => {
+    const token = localStorage.getItem('authToken');
+
+        if (!token) {
+            router.push('/login');
+        }
+  }, [router]);
 
     const [value, setValue] = useState('')
 

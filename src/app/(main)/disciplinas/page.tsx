@@ -4,9 +4,20 @@ import { DisciBox } from "@/components/disciplinas/DisciBox"
 import { Actions } from "@/components/disciplinas/Actions"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Disciplinas } from "@/data/Disciplinas"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 
 const Page = () => {
+
+    const router = useRouter();
+
+    useEffect(() => {
+    const token = localStorage.getItem('authToken');
+
+        if (!token) {
+            router.push('/login');
+        }
+  }, [router]);
 
     const [value, setValue] = useState('')
 

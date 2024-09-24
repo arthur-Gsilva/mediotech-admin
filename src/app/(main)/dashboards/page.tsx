@@ -10,8 +10,21 @@ import { FaPlus } from "react-icons/fa6";
 import { Alunobox } from "@/components/dashboards/Alunobox";
 import { MiddleArea } from "@/components/dashboards/MiddleArea";
 
+import { useRouter } from 'next/navigation';
+import { useEffect } from "react";
+
 
 const Page = () => {
+
+    const router = useRouter();
+
+    useEffect(() => {
+    const token = localStorage.getItem('authToken');
+
+        if (!token) {
+            router.push('/login');
+        }
+  }, [router]);
 
 
     const etariaData = [
@@ -152,5 +165,6 @@ const Page = () => {
         </div>
     )
 }
+
 
 export default Page

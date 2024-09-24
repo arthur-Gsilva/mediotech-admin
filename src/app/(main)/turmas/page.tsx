@@ -4,9 +4,20 @@ import { Actions } from "@/components/turmas/Actions"
 import { TurmaBox } from "@/components/turmas/TurmaBox"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Turmas } from "@/data/Turmas"
-import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
 
 const Page = () => {
+
+    const router = useRouter();
+
+    useEffect(() => {
+    const token = localStorage.getItem('authToken');
+
+        if (!token) {
+            router.push('/login');
+        }
+  }, [router]);
 
     const [value, setValue] = useState('')
 

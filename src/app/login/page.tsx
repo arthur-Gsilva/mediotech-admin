@@ -8,28 +8,56 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 
 import {  useRouter } from "next/navigation";
+import { useState } from "react"
 
 const formSchema = z.object({
-    username: z.string().min(2).max(50),
-    password: z.string().min(8, 'A senha tem no minimo 8 digitos')
+    userEmail: z.string().email({ message: "E-mail inválido" }),
+    password: z.string().min(6, 'A senha tem no minimo 8 digitos')
 })
 
 const Page = () => {
 
     const router = useRouter()
+    const [error, setError] = useState('');
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-          username: "",
+          userEmail: "",
           password: ""
         },
     })
 
-    function onSubmit(values: z.infer<typeof formSchema>) {
-        router.push('/dashboards')
-        console.log(values)
-      }
+    const onSubmit = async (values: z.infer<typeof formSchema>) => {
+        setError('');  // Reseta erros anteriores
+
+        try {
+            const response = await fetch('https://agendasenacapi-production.up.railway.app/login', {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                userEmail: values.userEmail,
+                userSenha: values.password,
+                }),
+        });
+
+        if (!response.ok) {
+            throw new Error('Erro no login');
+        }
+
+        const result = await response.json();
+        
+        // Salva o token de autenticação no localStorage
+        localStorage.setItem('authToken', result.token);
+
+        // Redireciona para o Dashboard ou página protegida
+        router.push('/dashboards');
+        } catch (err) {
+            setError('Email ou senha incorretos. Tente novamente.');
+        }
+    }
 
     return(
         <div className="h-screen w-screen flex justify-center items-center">
@@ -48,7 +76,7 @@ const Page = () => {
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
                             <FormField
                                 control={form.control}
-                                name="username"
+                                name="userEmail"
                                 render={({ field }) => (
                                 <FormItem>
                                     <FormLabel className="text-lg">Usuário</FormLabel>
@@ -72,6 +100,7 @@ const Page = () => {
                                 </FormItem>
                                 )}
                             />
+                            {error && <p>{error}</p>}
                             <div className="text-center">
                                 <Button type="submit" variant='secondary' className="font-bold text-center">Entrar</Button>
                             </div>

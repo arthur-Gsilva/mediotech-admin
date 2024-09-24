@@ -18,6 +18,12 @@ export const Navbar = () => {
     const pathname = usePathname()
     const router = useRouter()
 
+    const logout = () => {
+        localStorage.removeItem('authToken');
+    
+        router.push('/login');
+    }
+
     const menuCtx = useContext(MenuContext)
 
     const redirect = (path: string) => {
@@ -69,7 +75,7 @@ export const Navbar = () => {
                     <BsGear />
                     Configurações
                 </div>
-                <div className="flex gap-4 items-center text-xl cursor-pointer p-2 rounded-lg hover:bg-secondary">
+                <div className="flex gap-4 items-center text-xl cursor-pointer p-2 rounded-lg hover:bg-secondary" onClick={() => logout()}>
                     <RxExit />
                     Sair
                 </div>
