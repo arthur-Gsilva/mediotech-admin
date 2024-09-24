@@ -1,7 +1,7 @@
 'use client'
 
 import { DisciBox } from "@/components/disciplinas/DisciBox"
-import { Actions } from "@/components/turmas/Actions"
+import { Actions } from "@/components/disciplinas/Actions"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Disciplinas } from "@/data/Disciplinas"
 import { useState } from "react"

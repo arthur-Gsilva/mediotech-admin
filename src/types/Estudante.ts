@@ -3,6 +3,7 @@ export type Estudante = {
     nome: string,
     cpf: string,
     turma: string,
-    turno: string,
-    responsavel: string
+    turno: 'Manhã' | 'Tarde',
+    responsavel: string,
+    curso: 'Desenvolvimento de sistemas' | 'Logística'
 }

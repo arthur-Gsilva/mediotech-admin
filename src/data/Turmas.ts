@@ -53,4 +53,28 @@ export const Turmas: Turma[] = [
         turno: 'Tarde',
         curso: 'Logística'
     },
+    {
+        id: '01MT23',
+        estudantes: 25,
+        ano: '3º ano',
+        periodo: 2023,
+        turno: 'Tarde',
+        curso: 'Logística'
+    },
+    {
+        id: '02MT23',
+        estudantes: 28,
+        ano: '3º ano',
+        periodo: 2024,
+        turno: 'Tarde',
+        curso: 'Logística'
+    },
+    {
+        id: '03MT22',
+        estudantes: 28,
+        ano: '3º ano',
+        periodo: 2024,
+        turno: 'Manhã',
+        curso: 'Logística'
+    },
 ]

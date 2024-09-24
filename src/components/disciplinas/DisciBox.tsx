@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
 import { useState } from "react"
-import { DisciplinaModal } from "../DisciplinaModal"
+import { DisciplinaModal } from "../modals/DisciplinaModal"
 import { Disciplina } from "@/types/Disciplina"
 
 type Props = {

@@ -29,7 +29,7 @@ const Page = () => {
                     <div className="grid grid-cols-1 mt-5 gap-6 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
                     {filteredTurmas
                         .map((item) => (
-                        <TurmaBox key={item.id} data={item} />
+                            <TurmaBox key={item.id} data={item} />
                         ))
                     }
                     </div>

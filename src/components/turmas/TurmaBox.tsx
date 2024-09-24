@@ -1,7 +1,7 @@
 import { Turma } from "@/types/Turma"
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
 import { useState } from "react"
-import { TurmaModal } from "../TurmaModal"
+import { TurmaModal } from "../modals/TurmaModal"
 
 type Props = {
     data: Turma
@@ -28,6 +28,7 @@ export const TurmaBox = ({ data }: Props) => {
             </CardHeader>
             <CardContent>
                 <div>id: {data.id}</div>
+                <div>Curso: {data.curso}</div>
                 <div>Estudantes: {data.estudantes}</div>
                 <div>Turno: {data.turno}</div>
             </CardContent>

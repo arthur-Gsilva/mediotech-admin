@@ -8,8 +8,6 @@ import { Command, CommandGroup, CommandItem, CommandList } from "../ui/command";
 import { Anos } from "@/data/commoboxData/Anos";
 import { cn } from "@/lib/utils";
 import { Periodo } from "@/data/commoboxData/Periodo";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
-import { ActionForm } from "./ActionForm";
 
 type Props = {
     value: string,
@@ -116,19 +114,9 @@ export const Actions = ({ value, setValue }: Props) => {
                 </Popover>
             </div>
             <div>
-                <Dialog>
-                    <DialogTrigger>
-                        <Button> <AiOutlinePlus /> Adicionar Turma </Button>   
-                    </DialogTrigger>
-                    <DialogContent>
-                        <DialogHeader>
-                            <DialogTitle className="text-xl">Criar Turma</DialogTitle>
-                            <div className="h-1 w-full bg-primary"></div>
-                        </DialogHeader>
-
-                        <ActionForm />
-                    </DialogContent>
-                </Dialog>
+                <Button>
+                    <AiOutlinePlus /> Adicionar Colaborador
+                </Button>
             </div>
         </div>
     )
