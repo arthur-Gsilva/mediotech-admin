@@ -100,7 +100,7 @@ const Page = () => {
                                 </FormItem>
                                 )}
                             />
-                            {error && <p>{error}</p>}
+                            {error && <p className="text-center text-red-600">{error}</p>}
                             <div className="text-center">
                                 <Button type="submit" variant='secondary' className="font-bold text-center">Entrar</Button>
                             </div>

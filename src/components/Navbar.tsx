@@ -59,9 +59,9 @@ export const Navbar = () => {
                     <PiStudent />
                     Estudantes
                 </div>
-                <div style={{backgroundColor: pathname === '/professores' ? '#F6A10A' : ''}} onClick={() => redirect('professores')}>
+                <div style={{backgroundColor: pathname === '/colaboradores' ? '#F6A10A' : ''}} onClick={() => redirect('colaboradores')}>
                     <PiShirtFoldedFill />
-                    Professores
+                    Colaboradores
                 </div>
                 <div style={{backgroundColor: pathname === '/comunicados' ? '#F6A10A' : ''}} onClick={() => redirect('comunicados')}>
                     <HiOutlineSpeakerphone />
@@ -71,7 +71,7 @@ export const Navbar = () => {
 
             <div className="mt-16">
                 <div className="h-1 w-full bg-secondary mb-4"></div>
-                <div className="flex gap-4 items-center text-xl cursor-pointer p-2 rounded-lg hover:bg-secondary">
+                <div className="flex gap-4 items-center text-xl cursor-pointer p-2 rounded-lg mb-4 hover:bg-secondary">
                     <BsGear />
                     Configurações
                 </div>

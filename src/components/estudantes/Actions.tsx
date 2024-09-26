@@ -9,6 +9,7 @@ import { Anos } from "@/data/commoboxData/Anos";
 import { cn } from "@/lib/utils";
 import { Periodo } from "@/data/commoboxData/Periodo";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
+import { ActionForm } from "./ActionForm";
 
 type Props = {
     value: string,
@@ -24,7 +25,7 @@ export const Actions = ({ value, setValue }: Props) => {
     return(
         <div className="flex flex-col gap-4 items-center justify-between md:flex-row">
             <div className="flex flex-col items-center gap-4 md:flex-row">
-                <div className="border-2 border-brown flex items-center rounded-md px-1">
+                <div className="border-2 border-gray-700 flex items-center rounded-md px-1">
                     <input type="text" className="outline-none bg-transparent flex-1 text-gray-950"/>
                     <IoIosSearch />
                 </div>
@@ -125,6 +126,8 @@ export const Actions = ({ value, setValue }: Props) => {
                             <DialogTitle>Criar Aluno</DialogTitle>
                             <div className="h-1 w-full bg-primary"></div>
                         </DialogHeader>
+
+                        <ActionForm />
                     </DialogContent>
                 </Dialog>
             </div>
