@@ -3,17 +3,37 @@
 import { Actions } from "@/components/turmas/Actions"
 import { TurmaBox } from "@/components/turmas/TurmaBox"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Turmas } from "@/data/Turmas"
+import { api } from "@/services/api"
+import { Turma } from "@/types/Turma"
+import axios from "axios"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 
 const Page = () => {
 
     const router = useRouter();
-
-    useEffect(() => {
+    const [turmas, setTurmas] = useState<Turma[]>([])
     const token = localStorage.getItem('authToken');
 
+    useEffect(() => {
+        const fetchTurmas = async () => {
+          try {
+            const response = await axios.get('https://agendasenacapi-production.up.railway.app/turmas', {
+              headers: {
+                'Authorization': `Bearer ${token}`
+              },
+            });
+    
+            setTurmas(response.data);
+          } catch (err: any) {
+            console.log(err)
+          }
+        };
+
+        fetchTurmas();
+    }, [token]);
+
+    useEffect(() => {
         if (!token) {
             router.push('/login');
         }
@@ -21,9 +41,9 @@ const Page = () => {
 
     const [value, setValue] = useState('')
 
-    const filteredTurmas = value !== '' 
-    ? Turmas.filter((item) => item.ano === value) 
-    : Turmas;
+    // const filteredTurmas = value !== '' 
+    // ? Turmas.filter((item) => item.ano === value) 
+    // : Turmas;
 
     return(
         <main className="px-5 w-full">
@@ -35,14 +55,12 @@ const Page = () => {
                 <CardContent>
                     <Actions value={value} setValue={setValue}/>
 
-                    <div className="mt-2">Total de turmas: {filteredTurmas.length}</div>
+                    <div className="mt-2">Total de turmas: {turmas.length}</div>
 
                     <div className="grid grid-cols-1 mt-5 gap-6 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
-                    {filteredTurmas
-                        .map((item) => (
-                            <TurmaBox key={item.id} data={item} />
-                        ))
-                    }
+                    {turmas.map((turma) => (
+                        <TurmaBox key={turma.idturma} data={turma}  />
+                    ))}
                     </div>
                 </CardContent>
             </Card>

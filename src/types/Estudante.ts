@@ -1,9 +1,12 @@
+import { Turma } from "./Turma";
+
 export type Estudante = {
-    matricula: number,
-    nome: string,
-    cpf: string,
-    turma: string,
-    turno: 'Manhã' | 'Tarde',
-    responsavel: string,
-    curso: 'Desenvolvimento de sistemas' | 'Logística'
+    codigo: number;
+    cpfUser: string | null;
+    imailUser: string;
+    tipoUser: "ALUNO" | string; 
+    contatopessoal: string;
+    nomecontatoumergencia: string;
+    numerourgencia: string;
+    turma: Turma;
 }

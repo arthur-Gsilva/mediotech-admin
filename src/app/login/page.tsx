@@ -48,9 +48,13 @@ const Page = () => {
         }
 
         const result = await response.json();
+        const token = result["Token "]
+        if (!token) {
+            throw new Error('Token não recebido');
+        }
         
-        // Salva o token de autenticação no localStorage
-        localStorage.setItem('authToken', result.token);
+        
+        localStorage.setItem('authToken', token.trim());
 
         // Redireciona para o Dashboard ou página protegida
         router.push('/dashboards');
