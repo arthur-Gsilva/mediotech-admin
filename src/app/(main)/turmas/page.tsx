@@ -3,35 +3,15 @@
 import { Actions } from "@/components/turmas/Actions"
 import { TurmaBox } from "@/components/turmas/TurmaBox"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { api } from "@/services/api"
-import { Turma } from "@/types/Turma"
-import axios from "axios"
+import { useTurmas } from "@/contexts/TurmasContext"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 
 const Page = () => {
 
     const router = useRouter();
-    const [turmas, setTurmas] = useState<Turma[]>([])
+    const { turmas } = useTurmas();
     const token = localStorage.getItem('authToken');
-
-    useEffect(() => {
-        const fetchTurmas = async () => {
-          try {
-            const response = await axios.get('https://agendasenacapi-production.up.railway.app/turmas', {
-              headers: {
-                'Authorization': `Bearer ${token}`
-              },
-            });
-    
-            setTurmas(response.data);
-          } catch (err: any) {
-            console.log(err)
-          }
-        };
-
-        fetchTurmas();
-    }, [token]);
 
     useEffect(() => {
         if (!token) {

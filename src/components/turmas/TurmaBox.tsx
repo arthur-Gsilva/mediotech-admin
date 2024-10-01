@@ -4,6 +4,8 @@ import { useState } from "react"
 import { TurmaModal } from "../modals/TurmaModal"
 import { Button } from "../ui/button"
 import { MdModeEdit } from "react-icons/md";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
+import { ActionForm } from "./ActionForm"
 
 type Props = {
     data: Turma
@@ -13,6 +15,7 @@ export const TurmaBox = ({ data }: Props) => {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editHidden, setEditHidden] = useState(true)
+    const [isOpen, setIsOpen] = useState(false);
 
     const handleModalToggle = () => {
         setIsModalOpen((prev) => !prev);
@@ -38,13 +41,24 @@ export const TurmaBox = ({ data }: Props) => {
 
             <TurmaModal isOpen={isModalOpen} onClose={handleModalToggle} data={data} />
 
-            <Button 
-                className="bg-yellow-400 text-xl absolute right-3 transition-all" 
+            <div 
+                className=" absolute right-3 transition-all" 
                 style={{top: editHidden ? '-200px' : '20px'}} 
-                size='icon'
             >
-                <MdModeEdit />
-            </Button>
+                <Dialog open={isOpen} onOpenChange={setIsOpen}>
+                    <DialogTrigger>
+                        <Button className="bg-yellow-400 text-xl" size='icon'> <MdModeEdit /></Button>   
+                    </DialogTrigger>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle className="text-xl">Editar Turma</DialogTitle>
+                            <div className="h-1 w-full bg-primary"></div>
+                        </DialogHeader>
+
+                        <ActionForm setClose={setIsOpen} edit={true} data={data}/>
+                    </DialogContent>
+                </Dialog>
+            </div>
         </Card>
     )
 }

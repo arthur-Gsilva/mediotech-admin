@@ -4,8 +4,7 @@
 import "../globals.css";
 import { Navbar } from "@/components/Navbar";
 import { Header } from "@/components/Header";
-
-
+import { TurmasProvider } from "@/contexts/TurmasContext";
 
 
 export default function RootLayout({
@@ -14,25 +13,23 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
 
+  const token = localStorage.getItem("authToken")
 
   return (
-    <html lang="en">
-      <body
-        suppressHydrationWarning
-        className={`antialiased`}
-      >
+    
         <div className="flex">
           <Navbar />
           <div className="w-full flex flex-col items-center overflow-hidden">
               <Header />
+              <TurmasProvider token={token as string}>
+                {children}
+              </TurmasProvider>
               
-              {children}
               
           </div>
         </div>
         
         
-      </body>
-    </html>
+      
   );
 }

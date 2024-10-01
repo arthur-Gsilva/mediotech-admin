@@ -9,4 +9,7 @@ export type Estudante = {
     nomecontatoumergencia: string;
     numerourgencia: string;
     turma: Turma;
+    nomeCompletoUser: string,
+    dataNascimentoUser: string,
+    generoUser: 'Masculino' | 'Feminino'
 }

@@ -5,22 +5,26 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "../ui/input"
 import { Button } from "../ui/button"
+import { Turma } from "@/types/Turma";
+import { Periodo } from "@/data/commoboxData/Periodo";
 
 const formSchema = z.object({
     nome: z.string().min(2).max(60),
     representante: z.string().optional(),
-    turno: z.enum(["manhã", "tarde"]),
-    curso: z.enum(["Desenvolvimento de sistemas", "Logística"]),
-    periodo: z.enum(["1º ano", "2º ano", "3º ano"]),
+    turno: z.enum(["MANHÃ", "TARDE", "Noite"]),
+    curso: z.enum(["Desenvolvimento de sistemas", "Logistica", ""]),
+    periodo: z.enum(['1', '2', '3']),
     ano: z.string(),
     detalhes: z.string().min(2, 'Digite algo aqui')
 })
 
 type Props = {
-    setClose: (a: boolean) => void
+    setClose: (a: boolean) => void,
+    edit: boolean,
+    data?: Turma
 }
 
-export const ActionForm = ({ setClose }: Props) => {
+export const ActionForm = ({ setClose, edit, data }: Props) => {
 
     const token = localStorage.getItem('authToken')
 
@@ -28,29 +32,55 @@ export const ActionForm = ({ setClose }: Props) => {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-          nome: "",
-          representante: ''
+          nome: data?.nomeTurma || '',
+          representante: '',
+          turno: data?.turno,
+          curso: data?.curso.nomecurso || '',
+          periodo: data?.periodo,
+          ano: data?.anno,
+          detalhes: data?.detalhesTurma || ''
         },
     })
 
-    const  onSubmit  = async (values: z.infer<typeof formSchema>) => {
-        const response = await fetch('https://agendasenacapi-production.up.railway.app/turmas', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-              curso: {
-                idcursos: 1,  
-              },
-              periodo: Number(values.periodo[0]) ,
-              anno: Number(values.ano),
-              turno: values.turno.toUpperCase(),
-              nomeTurma: values.nome,
-              datalhesTurma: values.detalhes,
-            }),
-          });
+    const onSubmit = async (values: z.infer<typeof formSchema>) => {
+        if(!edit){
+            const response = await fetch('https://agendasenacapi-production.up.railway.app/turmas', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                  curso: {
+                    idcursos: 1,  
+                  },
+                  periodo: Number(values.periodo[0]) ,
+                  anno: Number(values.ano),
+                  turno: values.turno.toUpperCase(),
+                  nomeTurma: values.nome,
+                  datalhesTurma: values.detalhes,
+                }),
+              });
+        } else{
+            const response = await fetch(`https://agendasenacapi-production.up.railway.app/turma/${data?.idturma}`, {
+                method: 'PATCH',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                  curso: {
+                    idcursos: 1,  
+                  },
+                  periodo: values.periodo,
+                  anno: Number(values.ano),
+                  turno: values.turno.toUpperCase(),
+                  nomeTurma: values.nome,
+                  datalhesTurma: values.detalhes,
+                }),
+              });
+        }
+        
 
           setClose(false)
     }
@@ -86,8 +116,8 @@ export const ActionForm = ({ setClose }: Props) => {
                                     <SelectValue placeholder="Selecione o turno" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                    <SelectItem value="manhã">Manhã</SelectItem>
-                                    <SelectItem value="tarde">Tarde</SelectItem>
+                                    <SelectItem value="MANHÃ">Manhã</SelectItem>
+                                    <SelectItem value="TARDE">Tarde</SelectItem>
                                     </SelectContent>
                                 </Select>
                                 </FormControl>
@@ -111,7 +141,7 @@ export const ActionForm = ({ setClose }: Props) => {
                                         </SelectTrigger>
                                         <SelectContent>
                                         <SelectItem value="Desenvolvimento de sistemas">Desenvolvimento de Sistemas</SelectItem>
-                                        <SelectItem value="Logística">Logística</SelectItem>
+                                        <SelectItem value="Logistica">Logística</SelectItem>
                                         </SelectContent>
                                     </Select>
                                     </FormControl>
@@ -131,9 +161,9 @@ export const ActionForm = ({ setClose }: Props) => {
                                         <SelectValue placeholder="Selecione o período" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                        <SelectItem value="1º ano">1º Ano</SelectItem>
-                                        <SelectItem value="2º ano">2º Ano</SelectItem>
-                                        <SelectItem value="3º ano">3º Ano</SelectItem>
+                                        <SelectItem value="1">1º Ano</SelectItem>
+                                        <SelectItem value="2">2º Ano</SelectItem>
+                                        <SelectItem value="3">3º Ano</SelectItem>
                                         </SelectContent>
                                     </Select>
                                     </FormControl>

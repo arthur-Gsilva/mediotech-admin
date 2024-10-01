@@ -13,9 +13,9 @@ export type Turma = {
     curso: Curso,
     disciplinas: any,
     usersistema: null,
-    periodo: null,
+    periodo: any,
     anno: string,
-    turno: string,
+    turno: 'MANHÃ' | 'TARDE' | 'Noite',
     nomeTurma: string,
     detalhesTurma: string,
     representante: Estudante | null;

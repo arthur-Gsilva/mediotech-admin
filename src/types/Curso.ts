@@ -2,7 +2,7 @@ import { Disciplina } from "./Disciplina";
 
 export type Curso = {
     idcursos: number;
-    nomecurso: string;
+    nomecurso: 'Desenvolvimento de sistemas' | 'Logistica' | '';
     datalhescurso: string;
     disciplinas: Disciplina[];
 }

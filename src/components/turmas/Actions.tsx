@@ -127,7 +127,7 @@ export const Actions = ({ value, setValue }: Props) => {
                             <div className="h-1 w-full bg-primary"></div>
                         </DialogHeader>
 
-                        <ActionForm setClose={setIsOpen}/>
+                        <ActionForm setClose={setIsOpen} edit={false}/>
                     </DialogContent>
                 </Dialog>
             </div>

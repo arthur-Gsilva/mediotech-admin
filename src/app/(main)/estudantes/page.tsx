@@ -3,13 +3,17 @@
 import { Actions } from "@/components/estudantes/Actions"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Estudantes } from "@/data/Estudantes"
+import { Estudante } from "@/types/Estudante"
+import axios from "axios"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
+import { FaEdit } from "react-icons/fa";
+import { IoTrash } from "react-icons/io5";
 
 const Page = () => {
 
     const router = useRouter();
+    const [alunos, setAlunos] = useState<Estudante[]>([])
 
     useEffect(() => {
     const token = localStorage.getItem('authToken');
@@ -18,6 +22,28 @@ const Page = () => {
             router.push('/login');
         }
   }, [router]);
+
+  const token = localStorage.getItem('authToken');
+
+    useEffect(() => {
+      const fetchAlunos = async () => {
+        try {
+          const response = await axios.get('https://agendasenacapi-production.up.railway.app/user', {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            },
+          });
+          const data = response.data
+          const alunosFiltrados = data.filter((usuario: Estudante) => usuario.tipoUser === "ALUNO")
+
+          setAlunos(alunosFiltrados);
+        } catch (err: any) {
+          console.log(err)
+        }
+      };
+
+      fetchAlunos();
+  }, [token]);
 
     const [value, setValue] = useState('')
 
@@ -32,7 +58,7 @@ const Page = () => {
                 <CardContent >
                     <Actions value={value} setValue={setValue}/>
 
-                    <div className="my-2 font-semibold text-xl">Total de Alunos: {Estudantes.length}</div>
+                    <div className="my-2 font-semibold text-xl">Total de Alunos: {alunos.length}</div>
 
                     <Table>
                         <TableHeader>
@@ -43,18 +69,23 @@ const Page = () => {
                             <TableHead>Turma</TableHead>
                             <TableHead>Turno</TableHead>
                             <TableHead>Responsável</TableHead>
+                            <TableHead>Ações</TableHead>
                             </TableRow>
                         </TableHeader>
 
                         <TableBody >
-                            {Estudantes.map((estudante) => (
-                            <TableRow key={estudante.matricula}>
-                                <TableCell className="font-medium">{estudante.matricula}</TableCell>
-                                <TableCell>{estudante.nome}</TableCell>
-                                <TableCell>{estudante.curso}</TableCell>
-                                <TableCell>{estudante.turma}</TableCell>
-                                <TableCell>{estudante.turno}</TableCell>
-                                <TableCell>{estudante.responsavel}</TableCell>
+                            {alunos.map((estudante) => (
+                            <TableRow key={estudante.codigo}>
+                                <TableCell className="font-medium">{estudante.codigo}</TableCell>
+                                <TableCell>{estudante.nomeCompletoUser}</TableCell>
+                                <TableCell>{estudante.turma.curso.nomecurso}</TableCell>
+                                <TableCell>{estudante.turma.nomeTurma}</TableCell>
+                                <TableCell>{estudante.turma.turno}</TableCell>
+                                <TableCell>{estudante.numerourgencia}</TableCell>
+                                <TableCell className="flex text-white gap-2">
+                                    <div className="bg-yellow-300 p-2 rounded-md cursor-pointer"><FaEdit /></div>
+                                    <div className="bg-red-600 p-2 rounded-md cursor-pointer"><IoTrash /></div>
+                                </TableCell>
                             </TableRow>
                             ))}
                         </TableBody>

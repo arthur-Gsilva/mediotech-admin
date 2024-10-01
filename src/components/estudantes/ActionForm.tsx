@@ -5,28 +5,66 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "../ui/input"
 import { Button } from "../ui/button"
+import { useTurmas } from "@/contexts/TurmasContext";
 
 const formSchema = z.object({
     nome: z.string().min(2).max(60),
-    cpf: z.string().length(15, 'Digite o cpd no padrão 000.000.000-00'),
+    email: z.string().email({ message: 'Email inválido' }),
     representante: z.string().optional(),
-    turno: z.enum(["manhã", "tarde"]),
     curso: z.enum(["Desenvolvimento de sistemas", "Logística"]),
-    ano: z.enum(["1º ano", "2º ano", "3º ano"])
+    contato: z.string(),
+    dataNascimento: z.string().length(10),
+    senha: z.string().min(6, 'A senha deve conter pelo menos 6 dígitos'),
+    turma: z.number(),
+    genero: z.enum(['Masculino', 'Feminino'])
 })
 
-export const ActionForm = () => {
+type Props = {
+    setClose: (a: boolean) => void
+}
+
+export const ActionForm = ({ setClose }: Props) => {
+
+    const { turmas } = useTurmas();
+    const token = localStorage.getItem('authToken')
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
           nome: "",
-          representante: ''
+          representante: '',
+          contato: '',
+          dataNascimento: '',
+          turma: 0
         },
     })
 
-    function onSubmit(values: z.infer<typeof formSchema>) {
-        console.log(values)
+    const onSubmit  = async (values: z.infer<typeof formSchema>) => {
+        const response = await fetch('https://agendasenacapi-production.up.railway.app/register', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+                tipoUser: 'ALUNO',
+                nomeCompletoUser: values.nome,
+                imailUser: values.email,
+                contatopessoal: Number(values.contato),
+                senhaAcessoUser: values.senha,
+                dataNascimentoUser: values.dataNascimento,
+                nomecontatoumergencia: 'SEM',
+                numerourgencia: 'SEM',
+                generoUser: values.genero,
+                turma: {
+                    idturma: Number(values.turma)
+                }
+            }),
+          });
+
+          setClose(false)
     }
+
     return(
         <div>
             <Form {...form}>
@@ -47,12 +85,12 @@ export const ActionForm = () => {
                     />
                     <FormField
                         control={form.control}
-                        name="nome"
+                        name="email"
                         render={({ field }) => (
                             <FormItem>
-                            <FormLabel>CPF</FormLabel>
+                            <FormLabel>Email</FormLabel>
                             <FormControl>
-                                <Input placeholder="CPF do Aluno" {...field} />
+                                <Input placeholder="Email do Aluno" {...field} />
                             </FormControl>
                             
                             <FormMessage />
@@ -60,27 +98,6 @@ export const ActionForm = () => {
                         )}
                     />
 
-                    <FormField
-                        control={form.control}
-                        name="turno"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Turno</FormLabel>
-                                <FormControl>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                    <SelectTrigger>
-                                    <SelectValue placeholder="Selecione o turno" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                    <SelectItem value="manhã">Manhã</SelectItem>
-                                    <SelectItem value="tarde">Tarde</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                            )}
-                    />
 
                     <div className="flex gap-2 [&>*]:flex-1">
                         <FormField
@@ -106,26 +123,91 @@ export const ActionForm = () => {
                         />
                         <FormField
                             control={form.control}
-                            name="ano"
+                            name="contato"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Ano</FormLabel>
+                                    <FormLabel>Número</FormLabel>
                                     <FormControl>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                        <SelectTrigger>
-                                        <SelectValue placeholder="Selecione o ano" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                        <SelectItem value="1º ano">1º Ano</SelectItem>
-                                        <SelectItem value="2º ano">2º Ano</SelectItem>
-                                        <SelectItem value="3º ano">3º Ano</SelectItem>
-                                        </SelectContent>
-                                    </Select>
+                                        <Input type="number" placeholder="Número do Aluno" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
                             )}
                         />
+                    </div>
+                    <div className="flex gap-2 [&>*]:flex-1">
+                        <FormField
+                            control={form.control}
+                            name="dataNascimento"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Data de Nascimento</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="00/00/0000" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="senha"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Senha de acesso</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="Senha do Aluno" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+
+                    <div className="flex gap-2 [&>*]:flex-1">
+                        <FormField
+                            control={form.control}
+                            name="turma"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Turma</FormLabel>
+                                    <FormControl>
+                                    <Select onValueChange={(value) => field.onChange(Number(value))} defaultValue={field.value ? field.value.toString() : ''}>
+                                        <SelectTrigger>
+                                        <SelectValue placeholder="Selecione a turma" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {turmas.map((turma) => (
+                                                <SelectItem key={turma.idturma} value={turma.idturma.toString()}>{turma.nomeTurma}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="genero"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Gênero</FormLabel>
+                                        <FormControl>
+                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                            <SelectTrigger>
+                                            <SelectValue placeholder="Selecione seu Gênero" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                            <SelectItem value="Masculino">Masculino</SelectItem>
+                                            <SelectItem value="Feminino">Feminino</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
                     </div>
                     <Button type="submit">Submit</Button>
                 </form>

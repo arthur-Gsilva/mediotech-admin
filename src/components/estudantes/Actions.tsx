@@ -20,6 +20,7 @@ export const Actions = ({ value, setValue }: Props) => {
 
     const  [openAno, setOpenAno] = useState(false)
     const  [openPeriodo, setOpenPeriodo] = useState(false)
+    const [isOpen, setIsOpen] = useState(false);
     
 
     return(
@@ -117,7 +118,7 @@ export const Actions = ({ value, setValue }: Props) => {
             </div>
             <div>
 
-                <Dialog>
+                <Dialog open={isOpen} onOpenChange={setIsOpen}>
                     <DialogTrigger>
                         <Button> <AiOutlinePlus /> Adicionar Aluno </Button>   
                     </DialogTrigger>
@@ -127,7 +128,7 @@ export const Actions = ({ value, setValue }: Props) => {
                             <div className="h-1 w-full bg-primary"></div>
                         </DialogHeader>
 
-                        <ActionForm />
+                        <ActionForm setClose={setIsOpen}/>
                     </DialogContent>
                 </Dialog>
             </div>
