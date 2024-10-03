@@ -9,12 +9,11 @@ import { useQuery } from "@tanstack/react-query";
 import { Turma } from "@/types/Turma";
 import { getTurmas } from "@/utils/api";
 
-
 const formSchema = z.object({
+    tipoUser: z.enum(['PROFESSOR', 'COORDENADOR']),
     nome: z.string().min(2).max(60),
     email: z.string().email({ message: 'Email inválido' }),
     representante: z.string().optional(),
-    curso: z.enum(["Desenvolvimento de sistemas", "Logística"]),
     contato: z.string(),
     dataNascimento: z.string().length(10),
     senha: z.string().min(6, 'A senha deve conter pelo menos 6 dígitos'),
@@ -47,6 +46,8 @@ export const ActionForm = ({ setClose }: Props) => {
         },
     })
 
+    const tipoUser = form.watch("tipoUser");
+
     const onSubmit  = async (values: z.infer<typeof formSchema>) => {
         const response = await fetch('https://agendasenacapi-production.up.railway.app/register', {
             method: 'POST',
@@ -55,7 +56,7 @@ export const ActionForm = ({ setClose }: Props) => {
               Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify({
-                tipoUser: 'ALUNO',
+                tipoUser: values.tipoUser,
                 nomeCompletoUser: values.nome,
                 imailUser: values.email,
                 contatopessoal: Number(values.contato),
@@ -65,7 +66,7 @@ export const ActionForm = ({ setClose }: Props) => {
                 numerourgencia: 'SEM',
                 generoUser: values.genero,
                 turma: {
-                    idturma: Number(values.turma)
+                    idturma: Number(values.turma) || null
                 }
             }),
           });
@@ -92,6 +93,27 @@ export const ActionForm = ({ setClose }: Props) => {
                         )}
                     />
                     <FormField
+                            control={form.control}
+                            name="tipoUser"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Cargo</FormLabel>
+                                    <FormControl>
+                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                        <SelectTrigger>
+                                        <SelectValue placeholder="Selecione o Cargo" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                        <SelectItem value="COORDENADOR">Coordenador</SelectItem>
+                                        <SelectItem value="PROFESSOR">Professor</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    <FormField
                         control={form.control}
                         name="email"
                         render={({ field }) => (
@@ -108,27 +130,9 @@ export const ActionForm = ({ setClose }: Props) => {
 
 
                     <div className="flex gap-2 [&>*]:flex-1">
-                        <FormField
-                            control={form.control}
-                            name="curso"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Curso</FormLabel>
-                                    <FormControl>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                        <SelectTrigger>
-                                        <SelectValue placeholder="Selecione o curso" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                        <SelectItem value="Desenvolvimento de sistemas">Desenvolvimento de Sistemas</SelectItem>
-                                        <SelectItem value="Logística">Logística</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                        
+                        
+                        
                         <FormField
                             control={form.control}
                             name="contato"
@@ -173,7 +177,8 @@ export const ActionForm = ({ setClose }: Props) => {
                     </div>
 
                     <div className="flex gap-2 [&>*]:flex-1">
-                        <FormField
+                        {tipoUser === 'PROFESSOR' &&
+                            <FormField
                             control={form.control}
                             name="turma"
                             render={({ field }) => (
@@ -186,7 +191,7 @@ export const ActionForm = ({ setClose }: Props) => {
                                         </SelectTrigger>
                                         <SelectContent>
                                             {turmas?.map((turma) => (
-                                                <SelectItem key={turma?.idturma} value={turma?.idturma?.toString() || 'nenhuma'}>{turma.nomeTurma}</SelectItem>
+                                                <SelectItem key={turma.idturma} value={turma.idturma.toString()}>{turma.nomeTurma}</SelectItem>
                                             ))}
                                         </SelectContent>
                                     </Select>
@@ -195,6 +200,8 @@ export const ActionForm = ({ setClose }: Props) => {
                                 </FormItem>
                                 )}
                             />
+                        }
+                        
                             <FormField
                                 control={form.control}
                                 name="genero"

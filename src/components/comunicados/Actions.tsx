@@ -5,10 +5,10 @@ import { useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Button } from "../ui/button";
 import { Command, CommandGroup, CommandItem, CommandList } from "../ui/command";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 import { Anos } from "@/data/commoboxData/Anos";
 import { cn } from "@/lib/utils";
 import { Periodo } from "@/data/commoboxData/Periodo";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 import { ActionForm } from "./ActionForm";
 
 type Props = {
@@ -117,17 +117,18 @@ export const Actions = ({ value, setValue }: Props) => {
                 </Popover>
             </div>
             <div>
-            <Dialog open={isOpen} onOpenChange={setIsOpen}>
+
+                <Dialog open={isOpen} onOpenChange={setIsOpen}>
                     <DialogTrigger>
-                        <Button> <AiOutlinePlus /> Adicionar Colaborador </Button>   
+                        <Button> <AiOutlinePlus /> Adicionar Comunicado </Button>   
                     </DialogTrigger>
                     <DialogContent>
                         <DialogHeader>
-                            <DialogTitle>Criar Colaborador</DialogTitle>
+                            <DialogTitle>Criar Comunicado</DialogTitle>
                             <div className="h-1 w-full bg-primary"></div>
                         </DialogHeader>
 
-                        <ActionForm setClose={setIsOpen}/>
+                        <ActionForm setClose={setIsOpen} edit={false}/>
                     </DialogContent>
                 </Dialog>
             </div>

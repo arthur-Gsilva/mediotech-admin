@@ -15,16 +15,16 @@ export const ComuniModal = ({ isOpen, onClose, data }: Props) => {
         <Dialog open={isOpen} onOpenChange={onClose}>
             <DialogContent className="w-[80vw] max-w-none">
                 <DialogHeader>
-                    <DialogTitle className="font-bold text-2xl">{data?.titulo}</DialogTitle>
+                    <DialogTitle className="font-bold text-2xl">{data?.tituloComunicado}</DialogTitle>
                     <div className="h-[2px] w-full bg-primary"></div>
                 </DialogHeader>
                 <div className='flex flex-col gap-2'>
-                    <p>Tipo: {data?.tipo}</p>
-                    <p>Data: {data?.data.toString()}</p>
+                    <p>Tipo: {data?.tituloComunicado}</p>
+                    <p>Data: xxx</p>
                 </div>
 
                 <div className="mt-10">
-                    <p>{data?.conteudo}</p>
+                    <p>{data?.conteudoComunicado}</p>
                 </div>
             </DialogContent>
         </Dialog>

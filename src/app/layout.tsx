@@ -4,6 +4,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { MenuContext } from "@/contexts/MenuContext";
 import { useState } from "react";
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -23,6 +24,7 @@ export default function RootLayout({
 }>) {
 
   const [menu, setMenu] = useState<boolean>(false)
+  const queryClient = new QueryClient();
 
 
   return (
@@ -32,7 +34,9 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <MenuContext.Provider value={{menu, setMenu}}>
-          {children}
+            <QueryClientProvider client={queryClient}>
+                {children}
+            </QueryClientProvider>
         </MenuContext.Provider>
         
       </body>

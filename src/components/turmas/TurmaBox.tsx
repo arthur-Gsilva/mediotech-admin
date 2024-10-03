@@ -43,7 +43,7 @@ export const TurmaBox = ({ data }: Props) => {
 
             <div 
                 className=" absolute right-3 transition-all" 
-                style={{top: editHidden ? '-200px' : '20px'}} 
+                style={{bottom: editHidden ? '-200px' : '20px'}} 
             >
                 <Dialog open={isOpen} onOpenChange={setIsOpen}>
                     <DialogTrigger>

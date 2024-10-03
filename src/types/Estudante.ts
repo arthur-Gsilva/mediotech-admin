@@ -1,10 +1,10 @@
 import { Turma } from "./Turma";
 
-export type Estudante = {
+export type User = {
     codigo: number;
     cpfUser: string | null;
     imailUser: string;
-    tipoUser: "ALUNO" | string; 
+    tipoUser: "ALUNO" | 'PROFESSOR' | 'ADMIN' | 'COORDENADOR'; 
     contatopessoal: string;
     nomecontatoumergencia: string;
     numerourgencia: string;

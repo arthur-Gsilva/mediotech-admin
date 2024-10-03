@@ -26,9 +26,6 @@ export const TurmaModal = ({ isOpen, onClose, data }: Props) => {
           onClose(false)
     }
 
-    const editTurma = () => {
-        
-    }
 
     return(
         <Dialog open={isOpen} onOpenChange={onClose}>
@@ -45,7 +42,6 @@ export const TurmaModal = ({ isOpen, onClose, data }: Props) => {
                     <p>Horário: (botão ou PNG)</p>
 
                     <Button variant='destructive' className="max-w-24" onClick={deleteTurma}>Excluir Turma</Button>
-                    <Button variant='secondary' className="max-w-24" onClick={editTurma}>Editar Turma</Button>
                 </div>
 
                 <div className="mt-10">

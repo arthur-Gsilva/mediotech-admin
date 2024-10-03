@@ -3,7 +3,9 @@
 import { Actions } from "@/components/estudantes/Actions"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Estudante } from "@/types/Estudante"
+import { User } from "@/types/Estudante"
+import { getAlunos } from "@/utils/api"
+import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
@@ -13,7 +15,7 @@ import { IoTrash } from "react-icons/io5";
 const Page = () => {
 
     const router = useRouter();
-    const [alunos, setAlunos] = useState<Estudante[]>([])
+    // const [alunos, setAlunos] = useState<User[]>([])
 
     useEffect(() => {
     const token = localStorage.getItem('authToken');
@@ -25,27 +27,23 @@ const Page = () => {
 
   const token = localStorage.getItem('authToken');
 
-    useEffect(() => {
-      const fetchAlunos = async () => {
-        try {
-          const response = await axios.get('https://agendasenacapi-production.up.railway.app/user', {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            },
-          });
-          const data = response.data
-          const alunosFiltrados = data.filter((usuario: Estudante) => usuario.tipoUser === "ALUNO")
-
-          setAlunos(alunosFiltrados);
-        } catch (err: any) {
-          console.log(err)
-        }
-      };
-
-      fetchAlunos();
-  }, [token]);
+      const { data: alunos, error, isLoading } = useQuery<User[]>({
+        queryKey: [],
+        queryFn: getAlunos,
+        enabled: !!token
+      })
 
     const [value, setValue] = useState('')
+
+    const deleteAlunos = async (id: number) => {
+        const response = await fetch(`https://agendasenacapi-production.up.railway.app/user/${id}`, {
+            method: 'DELETE',
+            headers: {
+              'Authorization': `Bearer ${token}`, 
+              'Content-Type': 'application/json'
+            }
+          });
+    }
 
 
     return(
@@ -58,7 +56,7 @@ const Page = () => {
                 <CardContent >
                     <Actions value={value} setValue={setValue}/>
 
-                    <div className="my-2 font-semibold text-xl">Total de Alunos: {alunos.length}</div>
+                    <div className="my-2 font-semibold text-xl">Total de Alunos: {alunos?.length}</div>
 
                     <Table>
                         <TableHeader>
@@ -74,17 +72,22 @@ const Page = () => {
                         </TableHeader>
 
                         <TableBody >
-                            {alunos.map((estudante) => (
+                            {alunos?.map((estudante) => (
                             <TableRow key={estudante.codigo}>
                                 <TableCell className="font-medium">{estudante.codigo}</TableCell>
                                 <TableCell>{estudante.nomeCompletoUser}</TableCell>
-                                <TableCell>{estudante.turma.curso.nomecurso}</TableCell>
-                                <TableCell>{estudante.turma.nomeTurma}</TableCell>
-                                <TableCell>{estudante.turma.turno}</TableCell>
+                                <TableCell>{estudante.turma?.curso?.nomecurso || "Sem curso"}</TableCell>
+                                <TableCell>{estudante.turma?.nomeTurma}</TableCell>
+                                <TableCell>{estudante.turma?.turno}</TableCell>
                                 <TableCell>{estudante.numerourgencia}</TableCell>
                                 <TableCell className="flex text-white gap-2">
                                     <div className="bg-yellow-300 p-2 rounded-md cursor-pointer"><FaEdit /></div>
-                                    <div className="bg-red-600 p-2 rounded-md cursor-pointer"><IoTrash /></div>
+                                    <div 
+                                        className="bg-red-600 p-2 rounded-md cursor-pointer"
+                                        onClick={() => deleteAlunos(estudante.codigo)}
+                                    >
+                                            <IoTrash />
+                                    </div>
                                 </TableCell>
                             </TableRow>
                             ))}

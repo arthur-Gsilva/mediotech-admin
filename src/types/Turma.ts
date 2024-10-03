@@ -1,5 +1,5 @@
 import { Curso } from "./Curso";
-import { Estudante } from "./Estudante";
+import { User } from "./Estudante";
 
 export type Turma = {
     // id: string,
@@ -18,5 +18,5 @@ export type Turma = {
     turno: 'MANHÃ' | 'TARDE' | 'Noite',
     nomeTurma: string,
     detalhesTurma: string,
-    representante: Estudante | null;
+    representante: User | null;
 }

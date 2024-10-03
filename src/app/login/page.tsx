@@ -29,7 +29,7 @@ const Page = () => {
     })
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
-        setError('');  // Reseta erros anteriores
+        setError(''); 
 
         try {
             const response = await fetch('https://agendasenacapi-production.up.railway.app/login', {
@@ -38,8 +38,8 @@ const Page = () => {
                 'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                userEmail: values.userEmail,
-                userSenha: values.password,
+                    userEmail: values.userEmail,
+                    userSenha: values.password,
                 }),
         });
 
@@ -56,7 +56,6 @@ const Page = () => {
         
         localStorage.setItem('authToken', token.trim());
 
-        // Redireciona para o Dashboard ou página protegida
         router.push('/dashboards');
         } catch (err) {
             setError('Email ou senha incorretos. Tente novamente.');
@@ -98,19 +97,29 @@ const Page = () => {
                                 <FormItem>
                                     <FormLabel className="text-lg">Senha</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="senha" type="password" {...field} className="rounded-full bg-gray-300"/>
+                                        <div>
+                                            <Input placeholder="senha" type="password" {...field} className="rounded-full bg-gray-300"/>
+                                            <Button className="text-right" variant="link">Esqueceu a senha</Button>
+                                        </div>
+                                        
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
                                 )}
                             />
+                            
+
                             {error && <p className="text-center text-red-600">{error}</p>}
                             <div className="text-center">
-                                <Button type="submit" variant='secondary' className="font-bold text-center">Entrar</Button>
+                                <Button type="submit" className="font-bold text-center">Entrar</Button>
                             </div>
+
+                            
                             
                         </form>
                     </Form>
+
+                    
                 </div>
             </div>
 

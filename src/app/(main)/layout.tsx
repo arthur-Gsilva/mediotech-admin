@@ -4,8 +4,6 @@
 import "../globals.css";
 import { Navbar } from "@/components/Navbar";
 import { Header } from "@/components/Header";
-import { TurmasProvider } from "@/contexts/TurmasContext";
-
 
 export default function RootLayout({
   children,
@@ -21,9 +19,9 @@ export default function RootLayout({
           <Navbar />
           <div className="w-full flex flex-col items-center overflow-hidden">
               <Header />
-              <TurmasProvider token={token as string}>
+              
                 {children}
-              </TurmasProvider>
+              
               
               
           </div>
