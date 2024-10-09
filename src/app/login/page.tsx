@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
+import { jwtDecode } from 'jwt-decode';
 
 import {  useRouter } from "next/navigation";
 import { useState } from "react"
@@ -48,13 +49,14 @@ const Page = () => {
         }
 
         const result = await response.json();
-        const token = result["Token "]
+        const tokenCoded = result["Token"]
+        const token = jwtDecode(tokenCoded)
         if (!token) {
             throw new Error('Token não recebido');
         }
         
         
-        localStorage.setItem('authToken', token.trim());
+        localStorage.setItem('authToken', tokenCoded);
 
         router.push('/dashboards');
         } catch (err) {

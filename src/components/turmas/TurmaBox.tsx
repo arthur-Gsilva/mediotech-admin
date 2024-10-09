@@ -35,8 +35,6 @@ export const TurmaBox = ({ data }: Props) => {
                 <div>id: {data.idturma}</div>
                 <div>Curso: {data.curso && data.curso.nomecurso || 'Á definir' }</div>
                 <div>Turno: {data.turno}</div>
-
-                
             </CardContent>
 
             <TurmaModal isOpen={isModalOpen} onClose={handleModalToggle} data={data} />
@@ -46,7 +44,7 @@ export const TurmaBox = ({ data }: Props) => {
                 style={{bottom: editHidden ? '-200px' : '20px'}} 
             >
                 <Dialog open={isOpen} onOpenChange={setIsOpen}>
-                    <DialogTrigger>
+                    <DialogTrigger asChild>
                         <Button className="bg-yellow-400 text-xl" size='icon'> <MdModeEdit /></Button>   
                     </DialogTrigger>
                     <DialogContent>

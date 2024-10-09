@@ -9,8 +9,6 @@ type Props = {
 
 export const ComuniModal = ({ isOpen, onClose, data }: Props) => {
 
-
-
     return(
         <Dialog open={isOpen} onOpenChange={onClose}>
             <DialogContent className="w-[80vw] max-w-none">

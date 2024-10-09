@@ -13,18 +13,13 @@ export const DisciplinaModal = ({ isOpen, onClose, data }: Props) => {
         <Dialog open={isOpen} onOpenChange={onClose} >
             <DialogContent className="w-[80vw] max-w-none">
                 <DialogHeader>
-                    <DialogTitle className="font-bold text-2xl">{data.name}</DialogTitle>
+                    <DialogTitle className="font-bold text-2xl">{data.nomeDaDisciplina}</DialogTitle>
                     <div className="h-[2px] w-full bg-primary"></div>
                 </DialogHeader>
                 <div className='flex flex-col gap-2'>
-                    <p>Curso Técnologo: {data.curso}</p>
                     <p>Carga Horária: {data.cargaHoraria} Horas</p>
-                    <p>Professor: {data.professor}</p>
-                    <p>Turma: {data.turma}</p>
-                    <p>Quantidade de Alunos: {data.QtdAlunos}</p>
-                    <p>Turno: {data.turno}</p>
-                    <p>Horário: Segunda e Quarta, 08h - 12h</p>
-                    <p>Ementa: pe.senac.br/mediotec/ementa</p>
+                    <p>Professor: {data.nomeprofessor}</p>
+                    <p>Detalhes Adicionais: {data.detalhesAdicionais}</p>
                 </div>
 
                 <div className="mt-10">

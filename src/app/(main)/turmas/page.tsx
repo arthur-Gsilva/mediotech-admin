@@ -13,6 +13,9 @@ const Page = () => {
 
     const router = useRouter();
     const token = localStorage.getItem('authToken');
+    const [filtro, setFiltro] = useState<string>("")
+    const [periodo, setPeriodo] = useState('');
+    const [ano, setAno] = useState(''); 
 
     useEffect(() => {
         if (!token) {
@@ -21,16 +24,19 @@ const Page = () => {
   }, [router]);
 
     const { data: turmas, error, isLoading } = useQuery<Turma[]>({
-        queryKey: [],
+        queryKey: ['turmas', token],
         queryFn: getTurmas,
         enabled: !!token
     })
 
-    const [value, setValue] = useState('')
 
-    // const filteredTurmas = value !== '' 
-    // ? Turmas.filter((item) => item.ano === value) 
-    // : Turmas;
+    const turmasFiltradas = turmas?.filter((turma) => {
+        const nomeMatch = (turma.nomeTurma || "").toLowerCase().includes(filtro.toLowerCase())
+        const periodoMatch = periodo === 'all' || !periodo || turma.periodo?.toString() === periodo;
+        const anoMatch = ano === 'all' || !ano || turma.anno === ano;
+    
+        return nomeMatch && periodoMatch && anoMatch;
+    });
 
     return(
         <main className="px-5 w-full">
@@ -40,12 +46,12 @@ const Page = () => {
                     <div className="h-1 w-full bg-primary"></div>
                 </CardHeader>
                 <CardContent>
-                    <Actions value={value} setValue={setValue}/>
+                    <Actions onAnoChange={setAno} onPeriodoChange={setPeriodo} onFiltroChange={setFiltro}/>
 
-                    <div className="mt-2">Total de turmas: {turmas?.length}</div>
+                    <div className="mt-2">Total de turmas: {turmasFiltradas?.length}</div>
 
                     <div className="grid grid-cols-1 mt-5 gap-6 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
-                    {turmas?.map((turma) => (
+                    {turmasFiltradas?.map((turma) => (
                         <TurmaBox key={turma.idturma} data={turma}  />
                     ))}
                     </div>

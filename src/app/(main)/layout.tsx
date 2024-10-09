@@ -11,8 +11,6 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
 
-  const token = localStorage.getItem("authToken")
-
   return (
     
         <div className="flex">

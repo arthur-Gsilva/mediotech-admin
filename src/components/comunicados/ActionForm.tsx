@@ -8,6 +8,8 @@ import { Button } from "../ui/button"
 import { Turma } from "@/types/Turma";
 import { Periodo } from "@/data/commoboxData/Periodo";
 import { Textarea } from "../ui/textarea";
+import { Comunicado } from "@/types/Comunicado";
+import { User } from "@/types/Estudante";
 
 const formSchema = z.object({
     titulo: z.string().min(2).max(60),
@@ -18,31 +20,21 @@ const formSchema = z.object({
 type Props = {
     setClose: (a: boolean) => void,
     edit: boolean,
-    data?: Turma
+    data?: Comunicado | null,
 }
 
 export const ActionForm = ({ setClose, edit, data }: Props) => {
 
-    const formatDate = (date: Date): string => {
-        const day = String(date.getDate()).padStart(2, "0");
-        const month = String(date.getMonth() + 1).padStart(2, "0")
-        const year = date.getFullYear();
-        
-        return `${day}/${month}/${year}`;
-    };
-
     const token = localStorage.getItem('authToken')
-    const dataPublicacao = formatDate(new Date())
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-          titulo: '',
-          conteudo: '',
+          titulo: data?.tituloComunicado || '',
+          tipo: data?.tipodocomunicado,
+          conteudo: data?.conteudoComunicado || '',
         },
     })
-
-    
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         if(!edit){
@@ -62,26 +54,20 @@ export const ActionForm = ({ setClose, edit, data }: Props) => {
                 }),
               });
         } else{
-            // const response = await fetch(`https://agendasenacapi-production.up.railway.app/turma/${data?.idturma}`, {
-            //     method: 'PATCH',
-            //     headers: {
-            //       'Content-Type': 'application/json',
-            //       Authorization: `Bearer ${token}`,
-            //     },
-            //     body: JSON.stringify({
-            //       curso: {
-            //         idcursos: 1,  
-            //       },
-            //       periodo: values.periodo,
-            //       anno: Number(values.ano),
-            //       turno: values.turno.toUpperCase(),
-            //       nomeTurma: values.nome,
-            //       datalhesTurma: values.detalhes,
-            //     }),
-            //   });
+            const response = await fetch(`https://agendasenacapi-production.up.railway.app/comunicados/${data?.idComunicado}`, {
+                method: 'PATCH',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                  tituloComunicado: values.titulo,
+                  conteudoComunicado: values.conteudo,
+                  dataPublicacao: null
+                }),
+              });
         }
         
-         console.log(dataPublicacao)
           setClose(false)
     }
     return(

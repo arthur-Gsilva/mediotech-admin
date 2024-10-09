@@ -8,24 +8,27 @@ import { Button } from "../ui/button"
 import { useQuery } from "@tanstack/react-query";
 import { Turma } from "@/types/Turma";
 import { getTurmas } from "@/utils/api";
+import { User } from "@/types/Estudante";
+import { Comunicado } from "@/types/Comunicado";
 
 const formSchema = z.object({
-    tipoUser: z.enum(['PROFESSOR', 'COORDENADOR']),
+    tipoUser: z.enum(['PROFESSOR', 'COORDENADOR', "ALUNO", 'ADMIN', '']),
     nome: z.string().min(2).max(60),
     email: z.string().email({ message: 'Email inválido' }),
     representante: z.string().optional(),
     contato: z.string(),
     dataNascimento: z.string().length(10),
     senha: z.string().min(6, 'A senha deve conter pelo menos 6 dígitos'),
-    turma: z.number(),
-    genero: z.enum(['Masculino', 'Feminino'])
+    genero: z.enum(['Masculino', 'Feminino', ''])
 })
 
 type Props = {
-    setClose: (a: boolean) => void
+    setClose: (a: boolean) => void,
+    data?: User | null,
+    edit: boolean
 }
 
-export const ActionForm = ({ setClose }: Props) => {
+export const ActionForm = ({ setClose, data, edit }: Props) => {
 
     const token = localStorage.getItem('authToken')
 
@@ -38,38 +41,59 @@ export const ActionForm = ({ setClose }: Props) => {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-          nome: "",
-          representante: '',
-          contato: '',
-          dataNascimento: '',
-          turma: 0
+            nome: data?.nomeCompletoUser || "",
+            contato: data?.contatopessoal?.toString() || "",  
+            dataNascimento: data?.dataNascimentoUser || "",
+            tipoUser: data?.tipoUser || "",
+            genero: data?.generoUser || "",
+            email: data?.imailUser || "",
+            senha: ""
         },
     })
 
     const tipoUser = form.watch("tipoUser");
 
     const onSubmit  = async (values: z.infer<typeof formSchema>) => {
-        const response = await fetch('https://agendasenacapi-production.up.railway.app/register', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-                tipoUser: values.tipoUser,
-                nomeCompletoUser: values.nome,
-                imailUser: values.email,
-                contatopessoal: Number(values.contato),
-                senhaAcessoUser: values.senha,
-                dataNascimentoUser: values.dataNascimento,
-                nomecontatoumergencia: 'SEM',
-                numerourgencia: 'SEM',
-                generoUser: values.genero,
-                turma: {
-                    idturma: Number(values.turma) || null
-                }
-            }),
-          });
+        if(!edit){
+            const response = await fetch('https://agendasenacapi-production.up.railway.app/register', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    tipoUser: values.tipoUser,
+                    nomeCompletoUser: values.nome,
+                    imailUser: values.email,
+                    contatopessoal: Number(values.contato),
+                    senhaAcessoUser: values.senha,
+                    dataNascimentoUser: values.dataNascimento,
+                    nomecontatoumergencia: 'SEM',
+                    numerourgencia: 'SEM',
+                    generoUser: values.genero,
+                }),
+              });
+        } else{
+            const response = await fetch('https://agendasenacapi-production.up.railway.app/register', {
+                method: 'PATCH',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    tipoUser: values.tipoUser,
+                    nomeCompletoUser: values.nome,
+                    imailUser: values.email,
+                    contatopessoal: Number(values.contato),
+                    senhaAcessoUser: values.senha,
+                    dataNascimentoUser: values.dataNascimento,
+                    nomecontatoumergencia: 'SEM',
+                    numerourgencia: 'SEM',
+                    generoUser: values.genero,
+                }),
+              });
+        }
+        
 
           setClose(false)
     }
@@ -177,30 +201,6 @@ export const ActionForm = ({ setClose }: Props) => {
                     </div>
 
                     <div className="flex gap-2 [&>*]:flex-1">
-                        {tipoUser === 'PROFESSOR' &&
-                            <FormField
-                            control={form.control}
-                            name="turma"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Turma</FormLabel>
-                                    <FormControl>
-                                    <Select onValueChange={(value) => field.onChange(Number(value))} defaultValue={field.value ? field.value.toString() : ''}>
-                                        <SelectTrigger>
-                                        <SelectValue placeholder="Selecione a turma" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            {turmas?.map((turma) => (
-                                                <SelectItem key={turma.idturma} value={turma.idturma.toString()}>{turma.nomeTurma}</SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                                )}
-                            />
-                        }
                         
                             <FormField
                                 control={form.control}

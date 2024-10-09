@@ -8,17 +8,19 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { ComuniModal } from "@/components/modals/ComuniModal";
 import { Comunicado } from "@/types/Comunicado";
-import axios from "axios";
 import { IoTrash } from "react-icons/io5";
 import { FaEdit } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
 import { getComunicados } from "@/utils/api";
+import { DialogBase } from "@/components/DialogBase";
+import { TableSkeleton } from "@/components/Skeletons/TableSkeleton";
 
 
 const Page = () => {
 
     const router = useRouter();
     const token = localStorage.getItem('authToken')
+
 
     useEffect(() => {
 
@@ -34,16 +36,28 @@ const Page = () => {
     })
 
     const [value, setValue] = useState('')
-    const [selectedComunicado, setSelectedComunicado] = useState<null | Comunicado>(null);
+    const [filtro, setFiltro] = useState<string>("")
+    const [isOpen, setIsOpen] = useState(false);
+    const [selectedComuni, setSelectedComuni] = useState<Comunicado | null>(null)
+    const [isDetailOpen, setIsDetailOpen] = useState(false);
+    const [tipo, setTipo] = useState('')
 
+    const comunicadosFiltrados = comunicados?.filter(comunicado => {
+        const nomeMatch = (comunicado.tituloComunicado || "").toLowerCase().includes(filtro.toLowerCase())
+        const tipoMatch = tipo === 'all' || !tipo || comunicado.tipodocomunicado.toLowerCase() === tipo.toLowerCase();
 
-    const handleModalToggle = (comunicado: Comunicado) => {
-        setSelectedComunicado(comunicado); 
-    };
+        return nomeMatch && tipoMatch 
+    });
 
-    const handleModalClose = () => {
-        setSelectedComunicado(null); 
-    };
+    const openEditModal = (comunicado: Comunicado) => {
+        setSelectedComuni(comunicado)
+        setIsOpen(true)
+    }
+
+    const openDetailsModal = (comunicado: Comunicado) => {
+        setSelectedComuni(comunicado)
+        setIsDetailOpen(true)
+    }
 
     const deleteComunicados = async (id: number) => {
         const response = await fetch(`https://agendasenacapi-production.up.railway.app/comunicados/${id}`, {
@@ -64,9 +78,9 @@ const Page = () => {
                     <div className="h-1 w-full bg-primary"></div>
                 </CardHeader>
                 <CardContent >
-                    <Actions value={value} setValue={setValue}/>
+                    <Actions onTipoChange={setTipo} onFiltroChange={setFiltro}/>
 
-                    <div className="my-2 font-semibold text-xl">Total de Comunicados: {comunicados?.length}</div>
+                    <div className="my-2 font-semibold text-xl">Total de Comunicados: {comunicadosFiltrados?.length}</div>
 
                     <Table>
                         <TableHeader>
@@ -79,35 +93,51 @@ const Page = () => {
                             </TableRow>
                         </TableHeader>
 
-                        <TableBody >
-                            {comunicados?.map((comunicado) => (
-                            <>
-                                <TableRow key={comunicado.idComunicado} className="cursor-pointer" onClick={() => handleModalToggle(comunicado)}>
-                                    <TableCell className="font-medium">#{comunicado.idComunicado}</TableCell>
-                                    <TableCell>{comunicado.tipodocomunicado}</TableCell>
-                                    <TableCell>{comunicado.tituloComunicado}</TableCell>
-                                    <TableCell>xxx</TableCell>
-                                    <TableCell className="flex text-white gap-2">
-                                    <div className="bg-yellow-300 p-2 rounded-md cursor-pointer"><FaEdit /></div>
-                                    <div 
-                                        className="bg-red-600 p-2 rounded-md cursor-pointer"
-                                        onClick={() => deleteComunicados(comunicado.idComunicado)}
-                                    >
-                                            <IoTrash />
-                                    </div>
-                                    </TableCell>
-                                </TableRow>
-                            </>
-                            
+                        {isLoading &&
+                            <TableSkeleton />
+                        }
 
-
-                            ))}
-                        </TableBody>
+                        {!isLoading &&
+                            <TableBody >
+                                {comunicadosFiltrados?.map((comunicado) => (
+                                    <TableRow key={comunicado.idComunicado} className="cursor-pointer">
+                                        <TableCell className="font-medium" onClick={() => openDetailsModal(comunicado)}>#{comunicado.idComunicado}</TableCell>
+                                            <TableCell onClick={() => openDetailsModal(comunicado)}>{comunicado.tipodocomunicado}</TableCell>
+                                            <TableCell onClick={() => openDetailsModal(comunicado)}>{comunicado.tituloComunicado}</TableCell>
+                                            <TableCell onClick={() => openDetailsModal(comunicado)}>xxx</TableCell>
+                                            <TableCell 
+                                                    className="flex text-white gap-2"
+                                                >
+                                                <div className="bg-yellow-300 p-2 rounded-md cursor-pointer" onClick={() => openEditModal(comunicado)}><FaEdit /></div>
+                                                <div 
+                                                    className="bg-red-600 p-2 rounded-md cursor-pointer"
+                                                    onClick={() => deleteComunicados(comunicado.idComunicado)}
+                                                >
+                                                        <IoTrash />
+                                                </div>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        }
+                        
                     </Table>
                 </CardContent>
-
-                <ComuniModal isOpen={!!selectedComunicado} onClose={handleModalClose} data={selectedComunicado} />
             </Card>
+
+            <DialogBase 
+                isOpen={isOpen} 
+                setIsOpen={setIsOpen} 
+                comuniData={selectedComuni}
+                title={'Editar Comunicado'}
+                tipo={'COMUNICADO'}
+            />
+
+            <ComuniModal 
+                data={selectedComuni}
+                isOpen={isDetailOpen}
+                onClose={setIsDetailOpen}
+            />
         </main>
     )
 }

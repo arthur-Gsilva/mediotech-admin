@@ -10,9 +10,8 @@ import { Periodo } from "@/data/commoboxData/Periodo";
 
 const formSchema = z.object({
     nome: z.string().min(2).max(60),
-    representante: z.string().optional(),
     turno: z.enum(["MANHÃ", "TARDE", "Noite"]),
-    curso: z.enum(["Desenvolvimento de sistemas", "Logistica", ""]),
+    curso: z.enum(["ADS", "Logistica", ""]),
     periodo: z.enum(['1', '2', '3']),
     ano: z.string(),
     detalhes: z.string().min(2, 'Digite algo aqui')
@@ -33,56 +32,81 @@ export const ActionForm = ({ setClose, edit, data }: Props) => {
         resolver: zodResolver(formSchema),
         defaultValues: {
           nome: data?.nomeTurma || '',
-          representante: '',
-          turno: data?.turno,
+          turno: data?.turno || 'MANHÃ',
           curso: data?.curso.nomecurso || '',
-          periodo: data?.periodo,
-          ano: data?.anno,
+          periodo: data?.periodo || '',
+          ano: data?.anno || '',
           detalhes: data?.detalhesTurma || ''
         },
     })
 
-    const onSubmit = async (values: z.infer<typeof formSchema>) => {
-        if(!edit){
-            const response = await fetch('https://agendasenacapi-production.up.railway.app/turmas', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                  Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({
-                  curso: {
-                    idcursos: 1,  
-                  },
-                  periodo: Number(values.periodo[0]) ,
-                  anno: Number(values.ano),
-                  turno: values.turno.toUpperCase(),
-                  nomeTurma: values.nome,
-                  datalhesTurma: values.detalhes,
-                }),
-              });
-        } else{
-            const response = await fetch(`https://agendasenacapi-production.up.railway.app/turma/${data?.idturma}`, {
-                method: 'PATCH',
-                headers: {
-                  'Content-Type': 'application/json',
-                  Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({
-                  curso: {
-                    idcursos: 1,  
-                  },
-                  periodo: values.periodo,
-                  anno: Number(values.ano),
-                  turno: values.turno.toUpperCase(),
-                  nomeTurma: values.nome,
-                  datalhesTurma: values.detalhes,
-                }),
-              });
-        }
-        
+    const deleteTurmas = async (id: number) => {
+        const response = await fetch(`https://agendasenacapi-production.up.railway.app/turma/${id}`, {
+            method: 'DELETE',
+            headers: {
+              'Authorization': `Bearer ${token}`, 
+              'Content-Type': 'application/json'
+            }
+        });
 
-          setClose(false)
+        setClose(false)
+    }
+
+    const onSubmit = async (values: z.infer<typeof formSchema>) => {
+        
+            if(!edit){
+                const response = await fetch('https://agendasenacapi-production.up.railway.app/turmas', {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                      Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({
+                        curso: {
+                            idcursos: values.curso === 'Logistica' ? 1 : 2,  
+                          },
+                        periodo: values.periodo,
+                        anno: Number(values.ano),
+                        turno: values.turno.toUpperCase(),
+                        nomeTurma: values.nome,
+                        datalhesTurma: values.detalhes,
+                        }),
+                    
+                  });
+            } else{
+                const response = await fetch(`https://agendasenacapi-production.up.railway.app/turma/${data?.idturma}`, {
+                    method: 'PUT',
+                    headers: {
+                      'Content-Type': 'application/json',
+                      Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({
+                      periodo: values.periodo,
+                      anno: Number(values.ano),
+                      turno: values.turno.toUpperCase(),
+                      nomeTurma: values.nome,
+                      datalhesTurma: values.detalhes,
+                    }),
+                  });
+
+                  if (!response.ok) {
+                    throw new Error(`Erro na requisição: ${response.status}`);
+                  }
+            
+                  // Verifica se a resposta tem corpo antes de tentar convertê-la para JSON
+                  const contentType = response.headers.get('content-type');
+                  if (contentType && contentType.includes('application/json')) {
+                    const result = await response.json(); // Somente tenta analisar se houver conteúdo JSON
+                    console.log('Resultado da API:', result);
+                  } else {
+                    console.log('Nenhum conteúdo JSON na resposta.');
+                  }
+            }
+            
+    
+              setClose(false)
+        
+        
     }
     return(
         <div>
@@ -140,7 +164,7 @@ export const ActionForm = ({ setClose, edit, data }: Props) => {
                                         <SelectValue placeholder="Selecione o curso" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                        <SelectItem value="Desenvolvimento de sistemas">Desenvolvimento de Sistemas</SelectItem>
+                                        <SelectItem value="ADS">Desenvolvimento de Sistemas</SelectItem>
                                         <SelectItem value="Logistica">Logística</SelectItem>
                                         </SelectContent>
                                     </Select>
@@ -203,7 +227,14 @@ export const ActionForm = ({ setClose, edit, data }: Props) => {
                         )}
                     />
                     
-                    <Button type="submit">Submit</Button>
+                    <div className="flex justify-between">
+                        <Button type="submit">Submit</Button>
+                        {edit &&
+                            <Button variant="destructive" onClick={() => deleteTurmas(data?.idturma as number)}>Excluir</Button>
+                        }
+                        
+                    </div>
+                    
                 </form>
             </Form>
         </div>

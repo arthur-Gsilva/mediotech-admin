@@ -3,7 +3,7 @@ import axios from "axios";
 
 const token = localStorage.getItem('authToken')
 
-const req = axios.create({
+export const req = axios.create({
     baseURL: 'https://agendasenacapi-production.up.railway.app'
 })
 
@@ -40,6 +40,16 @@ export const getComunicados = async () => {
     const response = await req.get('/comunicados', {
       headers: {
         Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = response.data;
+    return data
+};
+export const getDisciplinas = async () => {
+    const token2 = localStorage.getItem('authToken')
+    const response = await req.get('/disciplinas', {
+      headers: {
+        Authorization: `Bearer ${token2}`,
       },
     });
     const data = response.data;

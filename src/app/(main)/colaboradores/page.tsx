@@ -1,6 +1,9 @@
 'use client'
 
 import { Actions } from "@/components/colaboradores/Actions"
+import { DialogBase } from "@/components/DialogBase"
+import { ColaboradorModal } from "@/components/modals/ColaboradorModal"
+import { TableSkeleton } from "@/components/Skeletons/TableSkeleton"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { User } from "@/types/Estudante"
@@ -17,6 +20,12 @@ const Page = () => {
     const token = localStorage.getItem('authToken')
     const router = useRouter();
     const [value, setValue] = useState('')
+    const [isOpen, setIsOpen] = useState(false);
+    const [isDetailOpen, setIsDetailOpen] = useState(false);
+    const [selectedCola, setSelectedCola] = useState<User | null>(null)
+    const [filtro, setFiltro] = useState<string>("")
+    const [cargo, setCargo] = useState('')
+    const [turno, setTurno] = useState('')
     
         useEffect(() => {
         const token = localStorage.getItem('authToken');
@@ -27,10 +36,28 @@ const Page = () => {
     }, [router]);
 
     const { data: colaboradores, error, isLoading } = useQuery<User[]>({
-        queryKey: [],
+        queryKey: ['colaboradores', token],
         queryFn: getColaboradores,
         enabled: !!token
     })
+
+    const colaboradoresFiltrados = colaboradores?.filter(colaborador => {
+        const nomeMatch = (colaborador.nomeCompletoUser || "").toLowerCase().includes(filtro.toLowerCase())
+        const cursoMatch = cargo === 'all' || !cargo || colaborador.tipoUser.toLowerCase() === cargo.toLowerCase();
+        const turnoMatch = turno === 'all' || !turno || colaborador.turma.turno.toLowerCase() === turno.toLowerCase();
+
+        return nomeMatch && cursoMatch && turnoMatch
+    });
+
+    const openEditModal = (cola: User) => {
+        setSelectedCola(cola)
+        setIsOpen(true)
+    }
+
+    const openDetailsModal = (Colaborador: User) => {
+        setSelectedCola(Colaborador)
+        setIsDetailOpen(true)
+    }
 
     const deleteColaborador = async (id: number) => {
         const response = await fetch(`https://agendasenacapi-production.up.railway.app/user/${id}`, {
@@ -50,9 +77,9 @@ const Page = () => {
                     <div className="h-1 w-full bg-primary"></div>
                 </CardHeader>
                 <CardContent >
-                    <Actions value={value} setValue={setValue}/>
+                    <Actions onCargoChange={setCargo} onTurnoChange={setTurno} onFiltroChange={setFiltro}/>
 
-                    <div className="my-2 font-semibold text-xl">Total de Colaboradores: {colaboradores?.length}</div>
+                    <div className="my-2 font-semibold text-xl">Total de Colaboradores: {colaboradoresFiltrados?.length}</div>
 
                     <Table>
                         <TableHeader>
@@ -67,30 +94,50 @@ const Page = () => {
                             </TableRow>
                         </TableHeader>
 
-                        <TableBody >
-                            {colaboradores?.map((colaborador) => (
-                            <TableRow key={colaborador.codigo}>
-                                <TableCell className="font-medium">{colaborador.codigo}</TableCell>
-                                <TableCell>{colaborador.nomeCompletoUser}</TableCell>
-                                <TableCell>{colaborador.tipoUser}</TableCell>
-                                <TableCell>{colaborador.turma?.turno || "Sem turno"}</TableCell>
-                                <TableCell>{colaborador.contatopessoal}</TableCell>
-                                <TableCell>{colaborador.imailUser}</TableCell>
-                                <TableCell className="flex text-white gap-2">
-                                    <div className="bg-yellow-300 p-2 rounded-md cursor-pointer"><FaEdit /></div>
-                                    <div 
-                                        className="bg-red-600 p-2 rounded-md cursor-pointer"
-                                        onClick={() => deleteColaborador(colaborador.codigo)}
-                                    >
-                                            <IoTrash />
-                                    </div>
-                                </TableCell>
-                            </TableRow>
-                            ))}
-                        </TableBody>
+                        {isLoading &&
+                            <TableSkeleton />
+                        }
+
+                        {!isLoading &&
+                            <TableBody >
+                                {colaboradoresFiltrados?.map((colaborador) => (
+                                <TableRow key={colaborador.codigo} className="cursor-pointer">
+                                    <TableCell onClick={() => openDetailsModal(colaborador)} className="font-medium">{colaborador.codigo}</TableCell>
+                                    <TableCell onClick={() => openDetailsModal(colaborador)}>{colaborador.nomeCompletoUser}</TableCell>
+                                    <TableCell onClick={() => openDetailsModal(colaborador)}>{colaborador.tipoUser}</TableCell>
+                                    <TableCell onClick={() => openDetailsModal(colaborador)}>{colaborador.turma?.turno || "Sem turno"}</TableCell>
+                                    <TableCell onClick={() => openDetailsModal(colaborador)}>{colaborador.contatopessoal}</TableCell>
+                                    <TableCell onClick={() => openDetailsModal(colaborador)}>{colaborador.imailUser}</TableCell>
+                                    <TableCell className="flex text-white gap-2">
+                                        <div className="bg-yellow-300 p-2 rounded-md cursor-pointer" onClick={() => openEditModal(colaborador)}><FaEdit /></div>
+                                        <div 
+                                            className="bg-red-600 p-2 rounded-md cursor-pointer"
+                                            onClick={() => deleteColaborador(colaborador.codigo)}
+                                        >
+                                                <IoTrash />
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                                ))}
+                            </TableBody>
+                        }
                     </Table>
                 </CardContent>
             </Card>
+
+            <DialogBase 
+                isOpen={isOpen} 
+                setIsOpen={setIsOpen} 
+                data={selectedCola} 
+                title={'Editar Colaborador'}
+                tipo={'COLABORADOR'}
+            />
+
+            <ColaboradorModal
+                isOpen={isDetailOpen}
+                onClose={setIsDetailOpen}
+                data={selectedCola}
+            />
         </main>
     )
 }
