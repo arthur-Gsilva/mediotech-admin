@@ -6,7 +6,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { User } from "@/types/Estudante"
 import { getAlunos, req } from "@/utils/api"
 import { useQuery } from "@tanstack/react-query"
-import axios from "axios"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { FaEdit } from "react-icons/fa";
@@ -16,7 +15,7 @@ import { EstudanteModal } from "@/components/modals/EstudanteModal";
 import { TableSkeleton } from "@/components/Skeletons/TableSkeleton"
 
 const Page = () => {
-    const token = localStorage.getItem('authToken');
+    const [token, setToken] = useState<string | null>(null)
     const router = useRouter();
     const [isOpen, setIsOpen] = useState(false);
     const [isDetailOpen, setIsDetailOpen] = useState(false);
@@ -26,13 +25,15 @@ const Page = () => {
     const [turno, setTurno] = useState<string>("")
 
     useEffect(() => {
+        const authToken = localStorage.getItem('authToken')
+        setToken(authToken)
         if (!token) {
             router.push('/login');
         }
     }, [router]);
 
 
-    const { data: alunos, error, isLoading } = useQuery<User[]>({
+    const { data: alunos, isLoading } = useQuery<User[]>({
         queryKey: ['alunos', token],
         queryFn: getAlunos,
         enabled: !!token
@@ -56,6 +57,8 @@ const Page = () => {
               'Content-Type': 'application/json'
             }
           });
+
+          response.ok ? console.log('ok') : ''
     }
 
     const openEditModal = (aluno: User) => {

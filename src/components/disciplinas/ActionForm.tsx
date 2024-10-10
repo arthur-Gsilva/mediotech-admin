@@ -8,13 +8,17 @@ import { Input } from "../ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 import { useQuery } from "@tanstack/react-query"
 import { User } from "@/types/Estudante"
-import { getColaboradores, req } from "@/utils/api"
+import { getColaboradores, getTurmas } from "@/utils/api"
+import { Turma } from "@/types/Turma"
+import { useToast } from "@/hooks/use-toast"
+import { useEffect, useState } from "react"
 
 const formSchema = z.object({
     nome: z.string().min(2).max(60),
     cargaHoraria: z.string().min(2, 'Essa disciplina precisa atingir horário mínimo').max(3, 'Essa disciplina não pode exercer tantas horas'),
     detalhes: z.string(),
     professor: z.string(),
+    turma: z.string()
 })
 
 type Props = {
@@ -26,13 +30,26 @@ type Props = {
 
 export const ActionForm = ({ setClose, edit, data }: Props) => {
 
-    const token = localStorage.getItem('authToken')
+    const [token, setToken] = useState<string | null>()
 
-    const { data: colaboradores, error, isLoading } = useQuery<User[]>({
+    useEffect(() => {
+      const authToken = localStorage.getItem('authToken')
+      setToken(authToken)
+    }, [])
+
+    const { toast } = useToast()
+
+    const { data: colaboradores } = useQuery<User[]>({
         queryKey: ['colaboradores', token],
         queryFn: getColaboradores,
         enabled: !!token
     })
+
+    const { data: turmas } = useQuery<Turma[]>({
+        queryKey: ['turmas', token],
+        queryFn: getTurmas,
+        enabled: !!token,
+    });
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -40,7 +57,8 @@ export const ActionForm = ({ setClose, edit, data }: Props) => {
           nome: data?.nomeDaDisciplina || '',
           detalhes: data?.detalhesAdicionais || '',
           cargaHoraria: data?.cargaHoraria || '',
-          professor: data?.nomeprofessor || ''
+          professor: data?.provessorid.toString() || '',
+          turma: data?.idturma.toString() || ''
         },
     })
 
@@ -53,6 +71,8 @@ export const ActionForm = ({ setClose, edit, data }: Props) => {
               'Content-Type': 'application/json'
             }
           });
+
+          response.ok ? console.log('ok') : ''
     }
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
@@ -68,10 +88,26 @@ export const ActionForm = ({ setClose, edit, data }: Props) => {
                     detalhesAdicionais: values.detalhes,
                     cargaHoraria: values.cargaHoraria,
                     professor: {
-                        codigo: values.professor
+                        codigo: Number(values.professor)
+                    },
+                    turma: {
+                        idturma: Number(values.turma)
                     }
                 })
             })
+
+            if(!response.ok){
+                toast({
+                    title: 'Erro ao Criar disciplina',
+                    description: `${response.json()}`,
+                    variant: 'destructive'
+                  })
+              } else{
+                toast({
+                    title: 'disciplina Criada',
+                    description: `${values.nome} criada no sistema`
+                  })
+              }
         } else {
             const response = await fetch(`https://agendasenacapi-production.up.railway.app/disciplinas/${data?.idDisciplina}`, {
                 method: 'PATCH',
@@ -84,10 +120,26 @@ export const ActionForm = ({ setClose, edit, data }: Props) => {
                     detalhesAdicionais: values.detalhes,
                     cargaHoraria: values.cargaHoraria,
                     professor: {
-                        codigo: values.professor
+                        codigo: Number(values.professor)
+                    },
+                    turma: {
+                        idturma: Number(values.turma)
                     }
                 })
             })
+
+            if(!response.ok){
+                toast({
+                    title: 'Erro ao Editar disciplina',
+                    description: `${response.json()}`,
+                    variant: 'destructive'
+                  })
+              } else{
+                toast({
+                    title: 'disciplina Editada',
+                    description: `${values.nome} Editado no sistema`
+                  })
+              }
         }
 
         setClose(false)
@@ -149,15 +201,41 @@ export const ActionForm = ({ setClose, edit, data }: Props) => {
                             <FormItem>
                             <FormLabel>Professor</FormLabel>
                             <FormControl>
-                                <Select onValueChange={field.onChange} defaultValue={field.value ? field.value.toString() : ''}>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Selecione o professor" />
                                     </SelectTrigger>
 
                                     <SelectContent>
                                         {colaboradores?.map((colaborador, index) => (
-                                            <SelectItem key={index} value={colaborador.nomeCompletoUser}>
-                                                {colaborador.nomeCompletoUser}
+                                            <SelectItem key={index} value={colaborador.codigo.toString()}>
+                                                {colaborador.nomeCompletoUser} {/* Exibe o nome */}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </FormControl>
+                            
+                            <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="turma"
+                        render={({ field }) => (
+                            <FormItem>
+                            <FormLabel>Turma</FormLabel>
+                            <FormControl>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Selecione a turma" />
+                                    </SelectTrigger>
+
+                                    <SelectContent>
+                                        {turmas?.map((turma, index) => (
+                                            <SelectItem key={index} value={turma.idturma.toString()}>
+                                                {turma.nomeTurma} 
                                             </SelectItem>
                                         ))}
                                     </SelectContent>
@@ -170,7 +248,7 @@ export const ActionForm = ({ setClose, edit, data }: Props) => {
                     />
                     
                     <div className="flex justify-between">
-                        <Button type="submit">Submit</Button>
+                        <Button type="submit">Enviar</Button>
                         
                         
                     </div>

@@ -7,23 +7,35 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { useQuery } from "@tanstack/react-query"
 import { Disciplina } from "@/types/Disciplina"
-import { getDisciplinas } from "@/utils/api"
+import { getDisciplinaByProfessor, getDisciplinas } from "@/utils/api"
+import { BoxSkeleton } from "@/components/Skeletons/BoxSkeleton"
 
 const Page = () => {
 
     const router = useRouter();
-    const token = localStorage.getItem('authToken');
+    const [token, setToken] = useState<string | null>(null)
+    const [filtro, setFiltro] = useState('')
+    const [tipoUser, setTipoUser] = useState<string | null>()
 
     useEffect(() => {
+        const authToken = localStorage.getItem('authToken')
+        const userType = localStorage.getItem('userTipo')
+        setTipoUser(userType)
+        setToken(authToken)
         if (!token) {
             router.push('/login');
         }
   }, [router]);
 
-    const { data: disciplinas, error, isLoading } = useQuery<Disciplina[]>({
-        queryKey: [],
-        queryFn: getDisciplinas,
+    const { data: disciplinas, isLoading } = useQuery<Disciplina[]>({
+        queryKey: ['disciplinas', token],
+        queryFn: tipoUser === 'PROFESSOR' ? () => getDisciplinaByProfessor(404) : getDisciplinas,
         enabled: !!token
+    })
+
+    const disciplinasFiltradas = disciplinas?.filter((disciplina) => {
+        const data = (disciplina.nomeDaDisciplina || "").toLowerCase().includes(filtro.toLowerCase())
+        return data
     })
 
     return(
@@ -34,15 +46,24 @@ const Page = () => {
                     <div className="h-1 w-full bg-primary"></div>
                 </CardHeader>
                 <CardContent>
-                    <Actions />
+                    <Actions onFiltroChange={setFiltro}/>
 
-                    <div className="mt-2">Total de Disciplinas: {disciplinas?.length}</div>
+                    <div className="mt-2">Total de Disciplinas: {disciplinasFiltradas?.length}</div>
 
                     <div className="grid grid-cols-1 mt-5 gap-6 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
-                    {disciplinas?.map((item, index) => (
-                            <DisciBox key={index} data={item} />
-                        ))
-                    }
+                        {isLoading &&
+                            <BoxSkeleton />
+                        }
+
+                        {!isLoading &&
+                            <>
+                                {disciplinasFiltradas?.map((item, index) => (
+                                <DisciBox key={index} data={item} />
+                                ))
+                                }
+                            </>
+                        }
+                        
                     </div>
                 </CardContent>
             </Card>

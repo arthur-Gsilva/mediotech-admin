@@ -1,8 +1,6 @@
-import { IoIosSearch, IoMdCheckmark } from "react-icons/io";
+import { IoIosSearch } from "react-icons/io";
 import { AiOutlinePlus } from "react-icons/ai";
-import { FaChevronDown } from "react-icons/fa6";
 import { ChangeEvent, useState } from "react";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Button } from "../ui/button";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
@@ -15,8 +13,6 @@ type Props = {
 
 export const Actions = ({ onTipoChange, onFiltroChange }: Props) => {
 
-    const  [openAno, setOpenAno] = useState(false)
-    const  [openPeriodo, setOpenPeriodo] = useState(false)
     const [isOpen, setIsOpen] = useState(false);
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {

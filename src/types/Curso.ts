@@ -1,8 +1,5 @@
-import { Disciplina } from "./Disciplina";
-
 export type Curso = {
     idcursos: number;
-    nomecurso: 'ADS' | 'Logistica' | '';
+    nomecurso: 'Medio Tec Analise e Desenvolvimento de Sistema' | 'Logistica' | '';
     datalhescurso: string;
-    disciplinas: Disciplina[];
 }

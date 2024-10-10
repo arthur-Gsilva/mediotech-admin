@@ -5,20 +5,22 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "../ui/input"
 import { Button } from "../ui/button"
-import { useQuery } from "@tanstack/react-query";
-import { Turma } from "@/types/Turma";
-import { getTurmas } from "@/utils/api";
 import { User } from "@/types/Estudante";
-import { Comunicado } from "@/types/Comunicado";
+import { useToast } from "@/hooks/use-toast";
+import { useEffect, useState } from "react";
 
-const formSchema = z.object({
-    tipoUser: z.enum(['PROFESSOR', 'COORDENADOR', "ALUNO", 'ADMIN', '']),
+
+
+const getFormSchema = (edit: boolean) => z.object({
+    tipoUser: z.enum(['PROFESSOR', 'CORDENADOR', "ALUNO", 'ADMIN', '']),
     nome: z.string().min(2).max(60),
     email: z.string().email({ message: 'Email inválido' }),
     representante: z.string().optional(),
     contato: z.string(),
     dataNascimento: z.string().length(10),
-    senha: z.string().min(6, 'A senha deve conter pelo menos 6 dígitos'),
+    senha: edit 
+        ? z.string().optional() 
+        : z.string().min(6, 'A senha deve conter pelo menos 6 dígitos'),
     genero: z.enum(['Masculino', 'Feminino', ''])
 })
 
@@ -30,13 +32,17 @@ type Props = {
 
 export const ActionForm = ({ setClose, data, edit }: Props) => {
 
-    const token = localStorage.getItem('authToken')
+    const formSchema = getFormSchema(edit);
 
-    const { data: turmas, error, isLoading } = useQuery<Turma[]>({
-        queryKey: [],
-        queryFn: getTurmas,
-        enabled: !!token
-    })
+    const { toast } = useToast()
+
+    const [token, setToken] = useState<string | null>()
+
+    useEffect(() => {
+      const authToken = localStorage.getItem('authToken')
+      setToken(authToken)
+    }, [])
+
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -51,47 +57,79 @@ export const ActionForm = ({ setClose, data, edit }: Props) => {
         },
     })
 
-    const tipoUser = form.watch("tipoUser");
 
     const onSubmit  = async (values: z.infer<typeof formSchema>) => {
         if(!edit){
+            console.log(values)
             const response = await fetch('https://agendasenacapi-production.up.railway.app/register', {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: `Bearer ${token}`,
+                  
                 },
                 body: JSON.stringify({
-                    tipoUser: values.tipoUser,
+                    tipoUser: values.tipoUser.toUpperCase(),
                     nomeCompletoUser: values.nome,
                     imailUser: values.email,
-                    contatopessoal: Number(values.contato),
+                    contatopessoal: values.contato,
                     senhaAcessoUser: values.senha,
                     dataNascimentoUser: values.dataNascimento,
                     nomecontatoumergencia: 'SEM',
                     numerourgencia: 'SEM',
                     generoUser: values.genero,
+                    
                 }),
               });
+
+              if(!response.ok){
+                toast({
+                    title: 'Erro ao cadastrar Usuário',
+                    description: `${response.json()}`,
+                    variant: 'destructive'
+                  })
+              } else{
+                toast({
+                    title: 'Colaborador adicionado',
+                    description: `${values.nome} adicionado ao sistema`
+                  })
+              }
+              
+              
         } else{
-            const response = await fetch('https://agendasenacapi-production.up.railway.app/register', {
+            console.log(values)
+            const response = await fetch(`https://agendasenacapi-production.up.railway.app/user/${data?.codigo}`, {
                 method: 'PATCH',
                 headers: {
                   'Content-Type': 'application/json',
                   Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify({
-                    tipoUser: values.tipoUser,
+                    tipoUser: values.tipoUser.toUpperCase(),
                     nomeCompletoUser: values.nome,
                     imailUser: values.email,
-                    contatopessoal: Number(values.contato),
-                    senhaAcessoUser: values.senha,
+                    contatopessoal: values.contato,
                     dataNascimentoUser: values.dataNascimento,
                     nomecontatoumergencia: 'SEM',
                     numerourgencia: 'SEM',
                     generoUser: values.genero,
+                    turma: {
+                        idturma: null
+                    }
                 }),
               });
+
+              if(!response.ok){
+                toast({
+                    title: 'Erro ao Editar Usuário',
+                    description: `${response.json()}`,
+                    variant: 'destructive'
+                  })
+              } else{
+                toast({
+                    title: 'Colaborador Editado',
+                    description: `${values.nome} Editado no sistema`
+                  })
+              }
         }
         
 
@@ -109,7 +147,7 @@ export const ActionForm = ({ setClose, data, edit }: Props) => {
                             <FormItem>
                             <FormLabel>Nome</FormLabel>
                             <FormControl>
-                                <Input placeholder="Nome do aluno" {...field} />
+                                <Input placeholder="Nome do Colaborador" {...field} />
                             </FormControl>
                             
                             <FormMessage />
@@ -128,7 +166,7 @@ export const ActionForm = ({ setClose, data, edit }: Props) => {
                                         <SelectValue placeholder="Selecione o Cargo" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                        <SelectItem value="COORDENADOR">Coordenador</SelectItem>
+                                        <SelectItem value="CORDENADOR">Coordenador</SelectItem>
                                         <SelectItem value="PROFESSOR">Professor</SelectItem>
                                         </SelectContent>
                                     </Select>
@@ -144,7 +182,7 @@ export const ActionForm = ({ setClose, data, edit }: Props) => {
                             <FormItem>
                             <FormLabel>Email</FormLabel>
                             <FormControl>
-                                <Input placeholder="Email do Aluno" {...field} />
+                                <Input placeholder="Email do Colaborador" {...field} />
                             </FormControl>
                             
                             <FormMessage />
@@ -164,7 +202,7 @@ export const ActionForm = ({ setClose, data, edit }: Props) => {
                                 <FormItem>
                                     <FormLabel>Número</FormLabel>
                                     <FormControl>
-                                        <Input type="number" placeholder="Número do Aluno" {...field} />
+                                        <Input type="number" placeholder="Número do Colaborador" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -185,19 +223,22 @@ export const ActionForm = ({ setClose, data, edit }: Props) => {
                                 </FormItem>
                             )}
                         />
-                        <FormField
+                        {!edit && 
+                            <FormField
                             control={form.control}
                             name="senha"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Senha de acesso</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="Senha do Aluno" {...field} />
+                                        <Input placeholder="Senha do colaborador" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
                             )}
                         />
+                        }
+                        
                     </div>
 
                     <div className="flex gap-2 [&>*]:flex-1">
@@ -224,9 +265,11 @@ export const ActionForm = ({ setClose, data, edit }: Props) => {
                                 )}
                             />
                     </div>
-                    <Button type="submit">Submit</Button>
+                    <Button type="submit">Enviar</Button>
                 </form>
             </Form>
+
+            
         </div>
     )
 }

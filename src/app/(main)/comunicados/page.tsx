@@ -19,23 +19,23 @@ import { TableSkeleton } from "@/components/Skeletons/TableSkeleton";
 const Page = () => {
 
     const router = useRouter();
-    const token = localStorage.getItem('authToken')
-
+    const [token, setToken] = useState<string | null>(null)
+    
 
     useEffect(() => {
-
+        const authToken = localStorage.getItem('authToken')
+        setToken(authToken)
         if (!token) {
             router.push('/login');
         }
   }, [router]);
 
-    const { data: comunicados, error, isLoading } = useQuery<Comunicado[]>({
+    const { data: comunicados, isLoading } = useQuery<Comunicado[]>({
         queryKey: [],
         queryFn: getComunicados,
         enabled: !!token
     })
 
-    const [value, setValue] = useState('')
     const [filtro, setFiltro] = useState<string>("")
     const [isOpen, setIsOpen] = useState(false);
     const [selectedComuni, setSelectedComuni] = useState<Comunicado | null>(null)
@@ -67,6 +67,8 @@ const Page = () => {
               'Content-Type': 'application/json'
             }
           });
+
+          response.ok ? console.log('ok') : ''
     }
 
 
@@ -104,7 +106,7 @@ const Page = () => {
                                         <TableCell className="font-medium" onClick={() => openDetailsModal(comunicado)}>#{comunicado.idComunicado}</TableCell>
                                             <TableCell onClick={() => openDetailsModal(comunicado)}>{comunicado.tipodocomunicado}</TableCell>
                                             <TableCell onClick={() => openDetailsModal(comunicado)}>{comunicado.tituloComunicado}</TableCell>
-                                            <TableCell onClick={() => openDetailsModal(comunicado)}>xxx</TableCell>
+                                            <TableCell onClick={() => openDetailsModal(comunicado)}>{comunicado.dataPulicacao}</TableCell>
                                             <TableCell 
                                                     className="flex text-white gap-2"
                                                 >

@@ -1,20 +1,27 @@
 import { IoIosSearch } from "react-icons/io";
 import { AiOutlinePlus } from "react-icons/ai";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 import { ActionForm } from "./ActionForm";
 
+type Props = {
+    onFiltroChange: (a: string) => void
+}
 
-export const Actions = () => {
+export const Actions = ({ onFiltroChange }: Props) => {
+
     const [isOpen, setIsOpen] = useState(false);
     
+    const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+        onFiltroChange(e.target.value);
+    };
 
     return(
         <div className="flex flex-col gap-4 items-center justify-between md:flex-row">
             <div className="flex flex-col items-center gap-4 md:flex-row">
                 <div className="border-2 border-gray-700 flex items-center rounded-md px-1">
-                    <input type="text" className="outline-none p-1 bg-transparent flex-1 text-gray-950"/>
+                    <input type="text" onChange={handleInputChange} className="outline-none p-1 bg-transparent flex-1 text-gray-950"/>
                     <IoIosSearch />
                 </div>
                 

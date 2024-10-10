@@ -11,15 +11,17 @@ import { Alunobox } from "@/components/dashboards/Alunobox";
 import { MiddleArea } from "@/components/dashboards/MiddleArea";
 
 import { useRouter } from 'next/navigation';
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 
 const Page = () => {
 
     const router = useRouter();
+    const [token, setToken] = useState<string | null>(null)
 
     useEffect(() => {
-    const token = localStorage.getItem('authToken');
+        const authToken = localStorage.getItem('authToken')
+        setToken(authToken)
 
         if (!token) {
             router.push('/login');

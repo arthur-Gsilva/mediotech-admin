@@ -24,7 +24,7 @@ export const getColaboradores = async () => {
       },
     });
     const data = response.data;
-    return data.filter((usuario: User) => usuario.tipoUser === 'PROFESSOR' || usuario.tipoUser === 'COORDENADOR');
+    return data.filter((usuario: User) => usuario.tipoUser === 'PROFESSOR' || usuario.tipoUser === 'CORDENADOR');
 };
 
 export const getTurmas = async () => {
@@ -46,12 +46,46 @@ export const getComunicados = async () => {
     return data
 };
 export const getDisciplinas = async () => {
-    const token2 = localStorage.getItem('authToken')
+
     const response = await req.get('/disciplinas', {
       headers: {
-        Authorization: `Bearer ${token2}`,
+        Authorization: `Bearer ${token}`,
       },
     });
     const data = response.data;
     return data
 };
+
+export const getTurmasByProfessor = async (idProfessor: number) => {
+    const response = await req.get(`/disciplinas/professor/${idProfessor}`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+
+    const data = response.data;
+    return data
+}
+
+export const getAvaliacoes = async (idAluno: number) => {
+    const response = await req.get(`/avaliacions/todas/${idAluno}`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+
+    const data = response.data;
+    return data
+}
+
+
+export const getDisciplinaByProfessor = async (idProfessor: number) => {
+    const response = await req.get(`disciplinas/professor/${idProfessor}`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+
+    const data = response.data;
+    return data
+}

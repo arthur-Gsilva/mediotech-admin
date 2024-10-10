@@ -4,7 +4,7 @@ export type Comunicado = {
     idComunicado: number,
     tituloComunicado: string,
     conteudoComunicado: string,
-    dataPublicacao: string,
+    dataPulicacao: string,
     tipodocomunicado: 'INFORMATIVO' | 'EVENTO',
-    user: User
+    usersistema: User
 }

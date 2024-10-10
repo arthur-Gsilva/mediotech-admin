@@ -55,10 +55,16 @@ const Page = () => {
             throw new Error('Token não recebido');
         }
         
-        
+        localStorage.setItem('username', result.NomeUsuario)
+        localStorage.setItem('tipoUser', result.TipoUser)
         localStorage.setItem('authToken', tokenCoded);
-
-        router.push('/dashboards');
+        
+        if(localStorage.getItem('tipoUser') === 'PROFESSOR'){
+            router.push('/turmas');
+        } else{
+            router.push('/dashboards');
+        }
+        
         } catch (err) {
             setError('Email ou senha incorretos. Tente novamente.');
         }
@@ -67,7 +73,7 @@ const Page = () => {
     return(
         <div className="h-screen w-screen flex justify-center items-center">
             <div className="flex bg-slate-100 justify-center items-center h-[450px] w-[60%] rounded-lg shadow-xl">
-                <div className="bg-primary flex justify-center items-center flex-1 h-full rounded-l-lg py-5 px-10">
+                <div className="bg-primary justify-center items-center flex-1 h-full rounded-l-lg py-5 px-10 hidden md:flex">
                     <img src="/logo.png" alt="logo do senac" className="h-auto w-48"/>
                 </div>
 

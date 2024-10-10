@@ -5,11 +5,10 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "../ui/input"
 import { Button } from "../ui/button"
-import { Turma } from "@/types/Turma";
-import { Periodo } from "@/data/commoboxData/Periodo";
 import { Textarea } from "../ui/textarea";
 import { Comunicado } from "@/types/Comunicado";
-import { User } from "@/types/Estudante";
+import { useToast } from "@/hooks/use-toast";
+import { useEffect, useState } from "react";
 
 const formSchema = z.object({
     titulo: z.string().min(2).max(60),
@@ -25,7 +24,14 @@ type Props = {
 
 export const ActionForm = ({ setClose, edit, data }: Props) => {
 
-    const token = localStorage.getItem('authToken')
+    const [token, setToken] = useState<string | null>()
+
+    useEffect(() => {
+      const authToken = localStorage.getItem('authToken')
+      setToken(authToken)
+    }, [])
+
+    const { toast } = useToast()
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -53,6 +59,19 @@ export const ActionForm = ({ setClose, edit, data }: Props) => {
                   }
                 }),
               });
+
+              if(!response.ok){
+                toast({
+                    title: 'Erro ao Criar Comunicado',
+                    description: `${response.json()}`,
+                    variant: 'destructive'
+                  })
+              } else{
+                toast({
+                    title: 'Comunicado Criado',
+                    description: `${values.titulo} criado no sistema`
+                  })
+              }
         } else{
             const response = await fetch(`https://agendasenacapi-production.up.railway.app/comunicados/${data?.idComunicado}`, {
                 method: 'PATCH',
@@ -62,10 +81,22 @@ export const ActionForm = ({ setClose, edit, data }: Props) => {
                 },
                 body: JSON.stringify({
                   tituloComunicado: values.titulo,
-                  conteudoComunicado: values.conteudo,
-                  dataPublicacao: null
+                  ConteudoComunicado: values.conteudo,
                 }),
               });
+
+              if(!response.ok){
+                toast({
+                    title: 'Erro ao Editar Comunicado',
+                    description: `${response.json()}`,
+                    variant: 'destructive'
+                  })
+              } else{
+                toast({
+                    title: 'Comunicado Editado',
+                    description: `${values.titulo} Editado no sistema`
+                  })
+              }
         }
         
           setClose(false)
@@ -117,9 +148,9 @@ export const ActionForm = ({ setClose, edit, data }: Props) => {
                     name="conteudo"
                     render={({ field }) => (
                         <FormItem>
-                        <FormLabel>Descrição</FormLabel>
+                        <FormLabel>Conteúdo</FormLabel>
                         <FormControl>
-                            <Textarea placeholder="Descrição do aluno" {...field} />
+                            <Textarea placeholder="Conteúdo do comunicado" {...field} />
                         </FormControl>
                         <FormMessage />
                         </FormItem>
@@ -127,7 +158,7 @@ export const ActionForm = ({ setClose, edit, data }: Props) => {
                     />
                         
                     
-                    <Button type="submit">Submit</Button>
+                    <Button type="submit">Enviar</Button>
                 </form>
             </Form>
         </div>

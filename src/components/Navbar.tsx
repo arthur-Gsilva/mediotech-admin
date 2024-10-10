@@ -10,13 +10,20 @@ import { BsGear } from "react-icons/bs";
 import { RxExit } from "react-icons/rx";
 
 import { usePathname, useRouter } from "next/navigation";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { MenuContext } from "@/contexts/MenuContext";
 
 export const Navbar = () => {
 
     const pathname = usePathname()
     const router = useRouter()
+
+    const [tipoUser, setTipoUser] = useState<string | null>(null)
+    
+    useEffect(() => {
+        const userType = localStorage.getItem('userTipo')
+        setTipoUser(userType)
+    }, [])
 
     const logout = () => {
         localStorage.removeItem('authToken');
@@ -43,10 +50,16 @@ export const Navbar = () => {
 
             <nav className="[&>div]:flex [&>div]:gap-4 [&>div]:items-center [&>div]:text-xl [&>div]:cursor-pointer [&>div:hover]:bg-secondary [&>div]:p-2 [&>div]:rounded-lg flex flex-col gap-6">
 
-                <div style={{backgroundColor: pathname === '/dashboards' ? '#F6A10A' : ''}} onClick={() => redirect('dashboards')}>
+            {(tipoUser === 'COORDENADOR' || tipoUser === 'ADMIN') && (
+                <div
+                    style={{ backgroundColor: pathname === '/paineis' ? '#F6A10A' : '' }}
+                    onClick={() => redirect('paineis')}
+                >
                     <VscGraph />
                     Dashboards
                 </div>
+            )}
+                
                 <div style={{backgroundColor: pathname === '/turmas' ? '#F6A10A' : ''}} onClick={() => redirect('turmas')}>
                     <HiOutlineUserGroup />
                     Turmas

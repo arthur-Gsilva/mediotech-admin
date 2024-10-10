@@ -17,7 +17,7 @@ type Props = {
 export const DialogBase = ({ isOpen, setIsOpen, data, title, tipo, comuniData }: Props) => {
     return(
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
-            <DialogContent>
+            <DialogContent className="my-5">
                 <DialogHeader>
                     <DialogTitle>{title}</DialogTitle>
                     <div className="h-1 w-full bg-primary"></div>

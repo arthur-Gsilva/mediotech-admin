@@ -1,4 +1,4 @@
-import { IoIosSearch, IoMdCheckmark } from "react-icons/io";
+import { IoIosSearch } from "react-icons/io";
 import { AiOutlinePlus } from "react-icons/ai";
 import { useState, ChangeEvent } from "react";
 import { Button } from "../ui/button";

@@ -18,7 +18,8 @@ export const ComuniModal = ({ isOpen, onClose, data }: Props) => {
                 </DialogHeader>
                 <div className='flex flex-col gap-2'>
                     <p>Tipo: {data?.tituloComunicado}</p>
-                    <p>Data: xxx</p>
+                    <p>Data: {data?.dataPulicacao}</p>
+                    <p>Autor: {data?.usersistema.nomeCompletoUser}</p>
                 </div>
 
                 <div className="mt-10">

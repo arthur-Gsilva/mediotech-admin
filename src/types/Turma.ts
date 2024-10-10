@@ -1,19 +1,13 @@
 import { Curso } from "./Curso";
+import { Disciplina } from "./Disciplina";
 import { User } from "./Estudante";
 
 export type Turma = {
-    // id: string,
-    // estudantes: number,
-    // ano: string,
-    // periodo: number,
-    // turno: 'Manhã' | 'Tarde',
-    // curso: 'Desenvolvimento de sistemas' | 'Logística'
-    // representante?: string
     idturma: number,
     curso: Curso,
-    disciplinas: any,
+    disciplinas: Disciplina,
     usersistema: null,
-    periodo: any,
+    periodo: string,
     anno: string,
     turno: 'MANHÃ' | 'TARDE' | 'Noite',
     nomeTurma: string,

@@ -9,17 +9,16 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { User } from "@/types/Estudante"
 import { getColaboradores } from "@/utils/api"
 import { useQuery } from "@tanstack/react-query"
-import axios from "axios"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { FaEdit } from "react-icons/fa"
 import { IoTrash } from "react-icons/io5"
 
+
 const Page = () => {
 
-    const token = localStorage.getItem('authToken')
+    const [token, setToken] = useState<string | null>(null)
     const router = useRouter();
-    const [value, setValue] = useState('')
     const [isOpen, setIsOpen] = useState(false);
     const [isDetailOpen, setIsDetailOpen] = useState(false);
     const [selectedCola, setSelectedCola] = useState<User | null>(null)
@@ -27,15 +26,16 @@ const Page = () => {
     const [cargo, setCargo] = useState('')
     const [turno, setTurno] = useState('')
     
-        useEffect(() => {
-        const token = localStorage.getItem('authToken');
+    useEffect(() => {
+        const authToken = localStorage.getItem('authToken')
+        setToken(authToken)
 
-            if (!token) {
-                router.push('/login');
-            }
+        if (!token) {
+            router.push('/login');
+        }
     }, [router]);
 
-    const { data: colaboradores, error, isLoading } = useQuery<User[]>({
+    const { data: colaboradores, isLoading } = useQuery<User[]>({
         queryKey: ['colaboradores', token],
         queryFn: getColaboradores,
         enabled: !!token
@@ -67,6 +67,8 @@ const Page = () => {
               'Content-Type': 'application/json'
             }
           });
+
+          response.ok ? console.log('ok') : ''
     }
 
     return(

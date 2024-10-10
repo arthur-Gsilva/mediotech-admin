@@ -6,13 +6,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Input } from "../ui/input"
 import { Button } from "../ui/button"
 import { Turma } from "@/types/Turma";
-import { Periodo } from "@/data/commoboxData/Periodo";
+import { useToast } from "@/hooks/use-toast";
+import { useEffect, useState } from "react";
 
 const formSchema = z.object({
     nome: z.string().min(2).max(60),
     turno: z.enum(["MANHÃ", "TARDE", "Noite"]),
-    curso: z.enum(["ADS", "Logistica", ""]),
-    periodo: z.enum(['1', '2', '3']),
+    curso: z.enum(["Medio Tec Analise e Desenvolvimento de Sistema", "Logistica", ""]),
+    periodo: z.string(),
     ano: z.string(),
     detalhes: z.string().min(2, 'Digite algo aqui')
 })
@@ -25,8 +26,14 @@ type Props = {
 
 export const ActionForm = ({ setClose, edit, data }: Props) => {
 
-    const token = localStorage.getItem('authToken')
+    const [token, setToken] = useState<string | null>()
 
+    useEffect(() => {
+      const authToken = localStorage.getItem('authToken')
+      setToken(authToken)
+    }, [])
+
+    const {toast} = useToast()
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -48,12 +55,11 @@ export const ActionForm = ({ setClose, edit, data }: Props) => {
               'Content-Type': 'application/json'
             }
         });
-
+        response.ok ? console.log('ok') : ''
         setClose(false)
     }
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
-        
             if(!edit){
                 const response = await fetch('https://agendasenacapi-production.up.railway.app/turmas', {
                     method: 'POST',
@@ -73,7 +79,21 @@ export const ActionForm = ({ setClose, edit, data }: Props) => {
                         }),
                     
                   });
+
+                  if(!response.ok){
+                    toast({
+                        title: 'Erro ao Criar Turma',
+                        description: `${response.json()}`,
+                        variant: 'destructive'
+                      })
+                  } else{
+                    toast({
+                        title: 'Turma Criada',
+                        description: `${values.nome} criada no sistema`
+                      })
+                  }
             } else{
+                console.log(values)
                 const response = await fetch(`https://agendasenacapi-production.up.railway.app/turma/${data?.idturma}`, {
                     method: 'PUT',
                     headers: {
@@ -82,31 +102,29 @@ export const ActionForm = ({ setClose, edit, data }: Props) => {
                     },
                     body: JSON.stringify({
                       periodo: values.periodo,
-                      anno: Number(values.ano),
+                      anno: values.ano,
                       turno: values.turno.toUpperCase(),
                       nomeTurma: values.nome,
                       datalhesTurma: values.detalhes,
+                      
                     }),
                   });
 
-                  if (!response.ok) {
-                    throw new Error(`Erro na requisição: ${response.status}`);
-                  }
-            
-                  // Verifica se a resposta tem corpo antes de tentar convertê-la para JSON
-                  const contentType = response.headers.get('content-type');
-                  if (contentType && contentType.includes('application/json')) {
-                    const result = await response.json(); // Somente tenta analisar se houver conteúdo JSON
-                    console.log('Resultado da API:', result);
-                  } else {
-                    console.log('Nenhum conteúdo JSON na resposta.');
+                  if(!response.ok){
+                    toast({
+                        title: 'Erro ao Editar Turma',
+                        description: `${response.json()}`,
+                        variant: 'destructive'
+                      })
+                  } else{
+                    toast({
+                        title: 'Turma editada',
+                        description: `${values.nome} editada no sistema`
+                      })
                   }
             }
             
-    
-              setClose(false)
-        
-        
+            setClose(false)
     }
     return(
         <div>
@@ -164,7 +182,7 @@ export const ActionForm = ({ setClose, edit, data }: Props) => {
                                         <SelectValue placeholder="Selecione o curso" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                        <SelectItem value="ADS">Desenvolvimento de Sistemas</SelectItem>
+                                        <SelectItem value="Medio Tec Analise e Desenvolvimento de Sistema">Desenvolvimento de Sistemas</SelectItem>
                                         <SelectItem value="Logistica">Logística</SelectItem>
                                         </SelectContent>
                                     </Select>

@@ -9,6 +9,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Turma } from "@/types/Turma";
 import { getTurmas } from "@/utils/api";
 import { User } from "@/types/Estudante";
+import { useToast } from "@/hooks/use-toast";
+import { useEffect, useState } from "react";
 
 
 const formSchema = z.object({
@@ -29,9 +31,16 @@ type Props = {
 
 export const ActionForm = ({ setClose, data, edit }: Props) => {
 
-    const token = localStorage.getItem('authToken')
+    const [token, setToken] = useState<string | null>()
 
-    const { data: turmas, error, isLoading } = useQuery<Turma[]>({
+    useEffect(() => {
+      const authToken = localStorage.getItem('authToken')
+      setToken(authToken)
+    }, [])
+
+    const {toast} = useToast()
+
+    const { data: turmas} = useQuery<Turma[]>({
         queryKey: [],
         queryFn: getTurmas,
         enabled: !!token
@@ -74,12 +83,24 @@ export const ActionForm = ({ setClose, data, edit }: Props) => {
                     }
                 }),
               });
+
+              if(!response.ok){
+                toast({
+                    title: 'Erro ao Criar Estudante',
+                    description: `${response.json()}`,
+                    variant: 'destructive'
+                  })
+              } else{
+                toast({
+                    title: 'estudante Criado',
+                    description: `${values.nome} criada no sistema`
+                  })
+              }
             } else{
                 const response = await fetch(`https://agendasenacapi-production.up.railway.app/register/${data?.codigo}`, {
                     method: 'PATCH',
                     headers: {
                     'Content-Type': 'application/json',
-                    
                     },
                     body: JSON.stringify({
                         nomeCompletoUser: values.nome,
@@ -93,6 +114,19 @@ export const ActionForm = ({ setClose, data, edit }: Props) => {
                         }
                     }),
                 });
+
+                if(!response.ok){
+                    toast({
+                        title: 'Erro ao Editar Estudante',
+                        description: `${response.json()}`,
+                        variant: 'destructive'
+                      })
+                  } else{
+                    toast({
+                        title: 'estudante Criado',
+                        description: `${values.nome} criado no sistema`
+                      })
+                  }
             }
             setClose(false)
       }
@@ -226,7 +260,7 @@ export const ActionForm = ({ setClose, data, edit }: Props) => {
                                 )}
                             />
                     </div>
-                    <Button type="submit" onClick={() => console.log("Button clicked")}>Submit</Button>
+                    <Button type="submit">Enviar</Button>
             </form>
     </Form>
       )

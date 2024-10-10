@@ -1,4 +1,4 @@
-import { IoIosSearch, IoMdCheckmark } from "react-icons/io";
+import { IoIosSearch } from "react-icons/io";
 import { AiOutlinePlus } from "react-icons/ai";
 import { ChangeEvent, useState } from "react";
 import { Button } from "../ui/button";
@@ -15,8 +15,6 @@ type Props = {
 
 export const Actions = ({ onTurnoChange, onCargoChange, onFiltroChange }: Props) => {
 
-    const  [openAno, setOpenAno] = useState(false)
-    const  [openPeriodo, setOpenPeriodo] = useState(false)
     const [isOpen, setIsOpen] = useState(false);
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -33,19 +31,19 @@ export const Actions = ({ onTurnoChange, onCargoChange, onFiltroChange }: Props)
                 </div>
                 <Select onValueChange={onCargoChange}>
                     <SelectTrigger className="max-w-[130px]">
-                        <SelectValue placeholder="Ano" />
+                        <SelectValue placeholder="Cargo" />
                     </SelectTrigger>
                     <SelectContent>
                         <SelectGroup>
                         <SelectItem value="all">Todos</SelectItem>
                         <SelectItem value="professor">Professor</SelectItem>
-                        <SelectItem value="coordenador">Coordenador</SelectItem>
+                        <SelectItem value="cordenador">Coordenador</SelectItem>
                         </SelectGroup>
                     </SelectContent>
                 </Select>
                 <Select onValueChange={onTurnoChange}>
                     <SelectTrigger className="max-w-[130px]">
-                        <SelectValue placeholder="Período" />
+                        <SelectValue placeholder="Turno" />
                     </SelectTrigger>
                     <SelectContent>
                         <SelectGroup>
