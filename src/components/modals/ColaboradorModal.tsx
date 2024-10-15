@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query"
 import { Disciplina } from "@/types/Disciplina"
 import { getTurmasByProfessor } from "@/utils/api"
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
+import { useEffect, useState } from "react"
 
 type Props = {
     isOpen: boolean,
@@ -13,7 +14,13 @@ type Props = {
 
 export const ColaboradorModal = ({ isOpen, onClose, data }: Props) => {
 
-    const token = localStorage.getItem('authToken')
+    const [token, setToken] = useState<string | null>(null)
+
+    useEffect(() => {
+        if(typeof window !== "undefined"){
+            setToken(window.localStorage.getItem('authToken'))
+        }
+    }, [])
 
     const { data: turmas} = useQuery<Disciplina[]>({
         queryKey: ['turmas', token],

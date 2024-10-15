@@ -12,16 +12,17 @@ import { BoxSkeleton } from "@/components/Skeletons/BoxSkeleton"
 
 const Page = () => {
 
+    const [filtro, setFiltro] = useState('')
+    const [userTipo, setUserTipo] = useState<string | null>('')
+
     const router = useRouter();
     const [token, setToken] = useState<string | null>(null)
-    const [filtro, setFiltro] = useState('')
-    const [tipoUser, setTipoUser] = useState<string | null>()
 
     useEffect(() => {
-        const authToken = localStorage.getItem('authToken')
-        const userType = localStorage.getItem('userTipo')
-        setTipoUser(userType)
-        setToken(authToken)
+        if(typeof window !== "undefined"){
+            setToken(window.localStorage.getItem('authToken'))
+            setUserTipo(window.localStorage.getItem('tipoUser'))
+        }
         if (!token) {
             router.push('/login');
         }
@@ -29,7 +30,7 @@ const Page = () => {
 
     const { data: disciplinas, isLoading } = useQuery<Disciplina[]>({
         queryKey: ['disciplinas', token],
-        queryFn: tipoUser === 'PROFESSOR' ? () => getDisciplinaByProfessor(404) : getDisciplinas,
+        queryFn: userTipo === 'PROFESSOR' ? () => getDisciplinaByProfessor(404) : getDisciplinas,
         enabled: !!token
     })
 

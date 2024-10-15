@@ -20,11 +20,11 @@ const Page = () => {
 
     const router = useRouter();
     const [token, setToken] = useState<string | null>(null)
-    
 
     useEffect(() => {
-        const authToken = localStorage.getItem('authToken')
-        setToken(authToken)
+        if(typeof window !== "undefined"){
+            setToken(window.localStorage.getItem('authToken'))
+        }
         if (!token) {
             router.push('/login');
         }

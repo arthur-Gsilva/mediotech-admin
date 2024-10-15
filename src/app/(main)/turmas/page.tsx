@@ -12,19 +12,19 @@ import { useEffect, useState } from "react"
 
 const Page = () => {
 
-    const router = useRouter();
-    const [token, setToken] = useState<string | null>(null)
     const [filtro, setFiltro] = useState<string>("")
     const [periodo, setPeriodo] = useState('');
     const [ano, setAno] = useState(''); 
-    const [tipoUser, setTipoUser] = useState<string | null>()
+    const [userTipo, setUserTipo] = useState<string | null>('') 
 
+    const router = useRouter();
+    const [token, setToken] = useState<string | null>(null)
 
     useEffect(() => {
-        const authToken = localStorage.getItem('authToken')
-        const userType = localStorage.getItem('tipoUser')
-        setTipoUser(userType)
-        setToken(authToken)
+        if(typeof window !== "undefined"){
+            setToken(window.localStorage.getItem('authToken'))
+            setUserTipo(window.localStorage.getItem('tipoUser'))
+        }
         if (!token) {
             router.push('/login');
         }
@@ -32,7 +32,7 @@ const Page = () => {
 
     const { data: turmas, isLoading } = useQuery<Turma[]>({
         queryKey: ['turmas', token],
-        queryFn:  tipoUser === 'PROFESSOR' ? () =>  getTurmasByProfessor(404) : getTurmas,
+        queryFn:  userTipo === 'PROFESSOR' ? () =>  getTurmasByProfessor(404) : getTurmas,
         enabled: !!token
     })
 

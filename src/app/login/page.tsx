@@ -7,9 +7,9 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { jwtDecode } from 'jwt-decode';
-
 import {  useRouter } from "next/navigation";
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { User } from "@/types/Estudante"
 
 const formSchema = z.object({
     userEmail: z.string().email({ message: "E-mail inválido" }),
@@ -30,45 +30,56 @@ const Page = () => {
     })
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
-        setError(''); 
+        setError('');
 
         try {
             const response = await fetch('https://agendasenacapi-production.up.railway.app/login', {
                 method: 'POST',
                 headers: {
-                'Content-Type': 'application/json',
+                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
                     userEmail: values.userEmail,
                     userSenha: values.password,
                 }),
-        });
+            });
 
-        if (!response.ok) {
-            throw new Error('Erro no login');
-        }
+            if (!response.ok) {
+                throw new Error('Erro no login');
+            }
 
-        const result = await response.json();
-        const tokenCoded = result["Token"]
-        const token = jwtDecode(tokenCoded)
-        if (!token) {
-            throw new Error('Token não recebido');
-        }
-        
-        localStorage.setItem('username', result.NomeUsuario)
-        localStorage.setItem('tipoUser', result.TipoUser)
-        localStorage.setItem('authToken', tokenCoded);
-        
-        if(localStorage.getItem('tipoUser') === 'PROFESSOR'){
-            router.push('/turmas');
-        } else{
-            router.push('/dashboards');
-        }
-        
+            const result = await response.json();
+            const tokenCoded = result["Token"];
+            const token = jwtDecode(tokenCoded);
+           
+            if (!token) {
+                throw new Error('Token não recebido');
+            }
+
+            setUserData(result);
+           
         } catch (err) {
             setError('Email ou senha incorretos. Tente novamente.');
         }
-    }
+    };
+
+    const [userData, setUserData] = useState<User | null>(null);
+
+    useEffect(() => {
+        if (userData) {
+            if (typeof window !== 'undefined') {
+                window.localStorage.setItem('username', userData.nomeCompletoUser);
+                window.localStorage.setItem('tipoUser', userData.tipoUser);
+                window.localStorage.setItem('authToken', userData.token);
+
+                if (userData.tipoUser === 'PROFESSOR') {
+                    router.push('/turmas');
+                } else {
+                    router.push('/paineis');
+                }
+            }
+        }
+    }, [userData, router]);
 
     return(
         <div className="h-screen w-screen flex justify-center items-center">

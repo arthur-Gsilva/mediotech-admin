@@ -31,11 +31,12 @@ type Props = {
 
 export const ActionForm = ({ setClose, data, edit }: Props) => {
 
-    const [token, setToken] = useState<string | null>()
+    const [token, setToken] = useState<string | null>(null)
 
     useEffect(() => {
-      const authToken = localStorage.getItem('authToken')
-      setToken(authToken)
+        if(typeof window !== "undefined"){
+            setToken(window.localStorage.getItem('authToken'))
+        }
     }, [])
 
     const {toast} = useToast()

@@ -11,5 +11,6 @@ export type User = {
     turma: Turma;
     nomeCompletoUser: string,
     dataNascimentoUser: string,
-    generoUser: 'Masculino' | 'Feminino'
+    generoUser: 'Masculino' | 'Feminino',
+    token: string
 }

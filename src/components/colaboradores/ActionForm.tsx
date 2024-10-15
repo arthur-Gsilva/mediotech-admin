@@ -36,13 +36,13 @@ export const ActionForm = ({ setClose, data, edit }: Props) => {
 
     const { toast } = useToast()
 
-    const [token, setToken] = useState<string | null>()
+    const [token, setToken] = useState<string | null>(null)
 
     useEffect(() => {
-      const authToken = localStorage.getItem('authToken')
-      setToken(authToken)
+        if(typeof window !== "undefined"){
+            setToken(window.localStorage.getItem('authToken'))
+        }
     }, [])
-
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),

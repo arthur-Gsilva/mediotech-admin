@@ -15,8 +15,6 @@ import { EstudanteModal } from "@/components/modals/EstudanteModal";
 import { TableSkeleton } from "@/components/Skeletons/TableSkeleton"
 
 const Page = () => {
-    const [token, setToken] = useState<string | null>(null)
-    const router = useRouter();
     const [isOpen, setIsOpen] = useState(false);
     const [isDetailOpen, setIsDetailOpen] = useState(false);
     const [selectedAluno, setSelectedAluno] = useState<User | null>(null)
@@ -24,13 +22,17 @@ const Page = () => {
     const [curso, setCurso] = useState<string>("")
     const [turno, setTurno] = useState<string>("")
 
+    const router = useRouter();
+    const [token, setToken] = useState<string | null>(null)
+
     useEffect(() => {
-        const authToken = localStorage.getItem('authToken')
-        setToken(authToken)
+        if(typeof window !== "undefined"){
+            setToken(window.localStorage.getItem('authToken'))
+        }
         if (!token) {
             router.push('/login');
         }
-    }, [router]);
+  }, [router]);
 
 
     const { data: alunos, isLoading } = useQuery<User[]>({

@@ -18,15 +18,18 @@ export const Navbar = () => {
     const pathname = usePathname()
     const router = useRouter()
 
-    const [tipoUser, setTipoUser] = useState<string | null>(null)
-    
+    const [userTipo, setUserTipo] = useState<string | null>(null)
+
     useEffect(() => {
-        const userType = localStorage.getItem('userTipo')
-        setTipoUser(userType)
+        if(typeof window !== "undefined"){
+            setUserTipo(window.localStorage.getItem('tipoUser'))
+        }
     }, [])
 
     const logout = () => {
-        localStorage.removeItem('authToken');
+        window.localStorage.removeItem('authToken');
+        window.localStorage.removeItem('tipoUser');
+        window.localStorage.removeItem('username');
     
         router.push('/login');
     }
@@ -50,15 +53,15 @@ export const Navbar = () => {
 
             <nav className="[&>div]:flex [&>div]:gap-4 [&>div]:items-center [&>div]:text-xl [&>div]:cursor-pointer [&>div:hover]:bg-secondary [&>div]:p-2 [&>div]:rounded-lg flex flex-col gap-6">
 
-            {(tipoUser === 'COORDENADOR' || tipoUser === 'ADMIN') && (
+            {userTipo !== 'PROFESSOR' &&
                 <div
-                    style={{ backgroundColor: pathname === '/paineis' ? '#F6A10A' : '' }}
-                    onClick={() => redirect('paineis')}
-                >
-                    <VscGraph />
-                    Dashboards
-                </div>
-            )}
+                style={{ backgroundColor: pathname === '/paineis' ? '#F6A10A' : '' }}
+                onClick={() => redirect('paineis')}
+            >
+                <VscGraph />
+                Paineis
+            </div>
+            }
                 
                 <div style={{backgroundColor: pathname === '/turmas' ? '#F6A10A' : ''}} onClick={() => redirect('turmas')}>
                     <HiOutlineUserGroup />

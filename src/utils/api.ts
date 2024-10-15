@@ -1,7 +1,7 @@
 import { User } from "@/types/Estudante";
 import axios from "axios";
 
-const token = localStorage.getItem('authToken')
+const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : ''
 
 export const req = axios.create({
     baseURL: 'https://agendasenacapi-production.up.railway.app'

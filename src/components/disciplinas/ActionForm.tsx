@@ -13,6 +13,7 @@ import { Turma } from "@/types/Turma"
 import { useToast } from "@/hooks/use-toast"
 import { useEffect, useState } from "react"
 
+
 const formSchema = z.object({
     nome: z.string().min(2).max(60),
     cargaHoraria: z.string().min(2, 'Essa disciplina precisa atingir horário mínimo').max(3, 'Essa disciplina não pode exercer tantas horas'),
@@ -30,11 +31,12 @@ type Props = {
 
 export const ActionForm = ({ setClose, edit, data }: Props) => {
 
-    const [token, setToken] = useState<string | null>()
+    const [token, setToken] = useState<string | null>(null)
 
     useEffect(() => {
-      const authToken = localStorage.getItem('authToken')
-      setToken(authToken)
+        if(typeof window !== "undefined"){
+            setToken(window.localStorage.getItem('authToken'))
+        }
     }, [])
 
     const { toast } = useToast()

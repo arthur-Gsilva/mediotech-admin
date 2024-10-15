@@ -1,9 +1,8 @@
 import { User } from "@/types/Estudante"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog"
-import { getAvaliacoes } from "@/utils/api"
-import { useQuery } from "@tanstack/react-query"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table"
-import { Avaliacao } from "@/types/Avaliacao"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Conceitos } from "../estudantes/Conceitos"
+import { Faltas } from "../estudantes/Faltas"
 
 type Props = {
     isOpen: boolean,
@@ -13,14 +12,6 @@ type Props = {
 
 
 export const EstudanteModal = ({ isOpen, onClose, data }: Props) => {
-
-    const token = localStorage.getItem('authToken')
-
-    const { data: avaliacoes } = useQuery<Avaliacao[]>({
-        queryKey: ['avaliacoes', token],
-        queryFn: () => getAvaliacoes(data?.codigo as number),
-        enabled: !!token
-    })
 
     return(
         <Dialog open={isOpen} onOpenChange={onClose}>
@@ -41,37 +32,24 @@ export const EstudanteModal = ({ isOpen, onClose, data }: Props) => {
                 </div>
 
                 <div className="mt-10">
-                    <div className="">
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>Disciplina</TableHead>
-                                    <TableHead>Conceito 1</TableHead>
-                                    <TableHead>Conceito 2</TableHead>
-                                    <TableHead>Média Final</TableHead>
-                                </TableRow>
-                            </TableHeader>
+                    <Tabs defaultValue="conceitos">
+                        <TabsList className="grid w-full grid-cols-2">
+                            <TabsTrigger value="conceitos" >
+                                Conceitos
+                            </TabsTrigger>
+                            <TabsTrigger value="faltas" >
+                                Faltas
+                            </TabsTrigger>
+                        </TabsList>
 
-                            <TableBody>
-                            {avaliacoes?.map((avaliacao) => {
-                            const conceito1 = avaliacao.conceito.notaConceito; 
-                            const conceito2 = Number(avaliacao.ordemlancameneto);
-                            
-                            
-                            const mediaFinal = ((conceito1 + conceito2) / 2).toFixed(2); // Média com duas casas decimais
-
-                            return (
-                                <TableRow key={avaliacao.disciplina.idDisciplina}>
-                                    <TableCell>{avaliacao.disciplina.nomeDaDisciplina}</TableCell>
-                                    <TableCell>{conceito1}</TableCell>
-                                    <TableCell>{conceito2}</TableCell>
-                                    <TableCell>{mediaFinal}</TableCell>
-                                </TableRow>
-                            );
-                        })}
-                            </TableBody>
-                        </Table>
-                    </div>
+                        <TabsContent value="conceitos">
+                            <Conceitos data={data}/>
+                        </TabsContent>
+                        <TabsContent value="faltas">
+                            <Faltas />
+                        </TabsContent>
+                    </Tabs>
+                    
                 </div>
             </DialogContent>
         </Dialog>

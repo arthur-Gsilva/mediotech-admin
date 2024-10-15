@@ -17,8 +17,6 @@ import { IoTrash } from "react-icons/io5"
 
 const Page = () => {
 
-    const [token, setToken] = useState<string | null>(null)
-    const router = useRouter();
     const [isOpen, setIsOpen] = useState(false);
     const [isDetailOpen, setIsDetailOpen] = useState(false);
     const [selectedCola, setSelectedCola] = useState<User | null>(null)
@@ -26,14 +24,17 @@ const Page = () => {
     const [cargo, setCargo] = useState('')
     const [turno, setTurno] = useState('')
     
-    useEffect(() => {
-        const authToken = localStorage.getItem('authToken')
-        setToken(authToken)
+    const router = useRouter();
+    const [token, setToken] = useState<string | null>(null)
 
+    useEffect(() => {
+        if(typeof window !== "undefined"){
+            setToken(window.localStorage.getItem('authToken'))
+        }
         if (!token) {
             router.push('/login');
         }
-    }, [router]);
+  }, [router]);
 
     const { data: colaboradores, isLoading } = useQuery<User[]>({
         queryKey: ['colaboradores', token],

@@ -10,6 +10,7 @@ import { Comunicado } from "@/types/Comunicado";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect, useState } from "react";
 
+
 const formSchema = z.object({
     titulo: z.string().min(2).max(60),
     conteudo: z.string(),
@@ -24,12 +25,14 @@ type Props = {
 
 export const ActionForm = ({ setClose, edit, data }: Props) => {
 
-    const [token, setToken] = useState<string | null>()
+  const [token, setToken] = useState<string | null>(null)
 
-    useEffect(() => {
-      const authToken = localStorage.getItem('authToken')
-      setToken(authToken)
-    }, [])
+  useEffect(() => {
+      if(typeof window !== "undefined"){
+          setToken(window.localStorage.getItem('authToken'))
+      }
+  }, [])
+
 
     const { toast } = useToast()
 

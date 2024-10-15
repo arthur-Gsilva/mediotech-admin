@@ -9,7 +9,6 @@ import { IoIosSearch } from "react-icons/io";
 import { FaPlus } from "react-icons/fa6";
 import { Alunobox } from "@/components/dashboards/Alunobox";
 import { MiddleArea } from "@/components/dashboards/MiddleArea";
-
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from "react";
 
@@ -20,9 +19,9 @@ const Page = () => {
     const [token, setToken] = useState<string | null>(null)
 
     useEffect(() => {
-        const authToken = localStorage.getItem('authToken')
-        setToken(authToken)
-
+        if(typeof window !== "undefined"){
+            setToken(window.localStorage.getItem('authToken'))
+        }
         if (!token) {
             router.push('/login');
         }
@@ -72,8 +71,8 @@ const Page = () => {
                             </div>
                         </CardHeader>
                         <CardContent className="flex flex-col gap-2 text-white">
-                            <div className="bg-brown p-1 rounded-lg">Manhã</div>
-                            <div className="bg-brown p-1 rounded-lg">Tarde</div>
+                            <div className="bg-secondary p-2 rounded-lg">Manhã</div>
+                            <div className="bg-secondary p-2 rounded-lg">Tarde</div>
                         </CardContent>
                     </Card>
                     <Card>
@@ -85,9 +84,9 @@ const Page = () => {
                             </div>
                         </CardHeader>
                         <CardContent className="flex flex-col gap-3 text-white">
-                            <div className="bg-brown p-1 rounded-lg">1º ano</div>
-                            <div className="bg-brown p-1 rounded-lg">2º ano</div>
-                            <div className="bg-brown p-1 rounded-lg">3º ano</div>
+                            <div className="bg-secondary p-2 rounded-lg">1º ano</div>
+                            <div className="bg-secondary p-2 rounded-lg">2º ano</div>
+                            <div className="bg-secondary p-2 rounded-lg">3º ano</div>
                         </CardContent>
                     </Card>
                     <Card>
@@ -99,11 +98,11 @@ const Page = () => {
                             </div>
                         </CardHeader>
                         <CardContent className="flex flex-col gap-4 items-center">
-                            <div className="border-2 border-brown flex items-center rounded-md px-1">
+                            <div className="border-2 secondary flex items-center rounded-md px-1">
                                 <input type="text" className="outline-none bg-transparent flex-1 text-gray-950"/>
                                 <IoIosSearch />
                             </div>
-                            <div className="text-xl bg-brown text-white p-2 rounded-sm cursor-pointer hover:bg-secondary">
+                            <div className="text-xl bg-secondary text-white p-2 rounded-sm cursor-pointer hover:bg-secondary">
                                 <FaPlus />
                             </div>
                         </CardContent>
