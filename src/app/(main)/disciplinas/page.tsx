@@ -19,14 +19,21 @@ const Page = () => {
     const [token, setToken] = useState<string | null>(null)
 
     useEffect(() => {
-        if(typeof window !== "undefined"){
-            setToken(window.localStorage.getItem('authToken'))
-            setUserTipo(window.localStorage.getItem('tipoUser'))
+        if (typeof window !== 'undefined') {
+            const authToken = window.localStorage.getItem('authToken');
+            const tipoUser = window.localStorage.getItem('tipoUser')
+            setUserTipo(tipoUser)
+            setToken(authToken);
         }
+    }, []); 
+
+    useEffect(() => {
+        if (token === null) return;
+
         if (!token) {
             router.push('/login');
         }
-  }, [router]);
+    }, [token, router]);
 
     const { data: disciplinas, isLoading } = useQuery<Disciplina[]>({
         queryKey: ['disciplinas', token],

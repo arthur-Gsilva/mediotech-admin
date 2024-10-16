@@ -10,22 +10,28 @@ import { FaPlus } from "react-icons/fa6";
 import { Alunobox } from "@/components/dashboards/Alunobox";
 import { MiddleArea } from "@/components/dashboards/MiddleArea";
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 
 
 const Page = () => {
-
     const router = useRouter();
     const [token, setToken] = useState<string | null>(null)
+    
 
     useEffect(() => {
-        if(typeof window !== "undefined"){
-            setToken(window.localStorage.getItem('authToken'))
+        if (typeof window !== 'undefined') {
+            const authToken = window.localStorage.getItem('authToken');
+            setToken(authToken);
         }
+    }, []); 
+
+    useEffect(() => {
+        if (token === null) return;
+
         if (!token) {
             router.push('/login');
         }
-  }, [router]);
+    }, [token, router]);
 
 
     const etariaData = [

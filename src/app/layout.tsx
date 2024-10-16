@@ -5,6 +5,7 @@ import "./globals.css";
 import { MenuContext } from "@/contexts/MenuContext";
 import { useState } from "react";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { LoggedUserProvider } from "@/contexts/AuthContext";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -34,9 +35,12 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <MenuContext.Provider value={{menu, setMenu}}>
+          <LoggedUserProvider>
             <QueryClientProvider client={queryClient}>
                 {children}
             </QueryClientProvider>
+          </LoggedUserProvider>
+            
         </MenuContext.Provider>
         
       </body>

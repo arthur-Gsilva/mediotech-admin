@@ -6,10 +6,15 @@ import { Input } from "@/components/ui/input"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import { jwtDecode } from 'jwt-decode';
 import {  useRouter } from "next/navigation";
 import { useEffect, useState } from "react"
-import { User } from "@/types/Estudante"
+
+
+type User = {
+    Token: string,
+    TipoUser: string,
+    NomeUsuario: string
+  }
 
 const formSchema = z.object({
     userEmail: z.string().email({ message: "E-mail inválido" }),
@@ -49,14 +54,9 @@ const Page = () => {
             }
 
             const result = await response.json();
-            const tokenCoded = result["Token"];
-            const token = jwtDecode(tokenCoded);
-           
-            if (!token) {
-                throw new Error('Token não recebido');
-            }
 
             setUserData(result);
+            
            
         } catch (err) {
             setError('Email ou senha incorretos. Tente novamente.');
@@ -68,15 +68,16 @@ const Page = () => {
     useEffect(() => {
         if (userData) {
             if (typeof window !== 'undefined') {
-                window.localStorage.setItem('username', userData.nomeCompletoUser);
-                window.localStorage.setItem('tipoUser', userData.tipoUser);
-                window.localStorage.setItem('authToken', userData.token);
+                window.localStorage.setItem('username', userData.NomeUsuario);
+                window.localStorage.setItem('tipoUser', userData.TipoUser);
+                window.localStorage.setItem('authToken', userData.Token);
 
-                if (userData.tipoUser === 'PROFESSOR') {
+                if (userData.TipoUser === 'PROFESSOR') {
                     router.push('/turmas');
                 } else {
                     router.push('/paineis');
                 }
+                
             }
         }
     }, [userData, router]);
