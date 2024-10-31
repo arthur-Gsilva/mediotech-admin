@@ -7,8 +7,8 @@ import { TableSkeleton } from "@/components/Skeletons/TableSkeleton"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { User } from "@/types/Estudante"
-import { getColaboradores } from "@/utils/api"
-import { useQuery } from "@tanstack/react-query"
+import { excludeUser, getColaboradores } from "@/utils/api"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { FaEdit } from "react-icons/fa"
@@ -66,16 +66,19 @@ const Page = () => {
         setIsDetailOpen(true)
     }
 
-    const deleteColaborador = async (id: number) => {
-        const response = await fetch(`https://agendasenacapi-production.up.railway.app/user/${id}`, {
-            method: 'DELETE',
-            headers: {
-              'Authorization': `Bearer ${token}`, 
-              'Content-Type': 'application/json'
-            }
-          });
+    const queryClient = useQueryClient();
 
-          response.ok ? console.log('ok') : ''
+    const deleteMutation = useMutation({
+        mutationFn: excludeUser,
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ['colaboradores', token]
+            })
+        }
+    })
+
+    const deleteColaborador = async (id: number) => {
+        await deleteMutation.mutateAsync(id)
     }
 
     return(

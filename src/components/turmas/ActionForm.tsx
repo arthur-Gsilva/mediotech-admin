@@ -8,6 +8,8 @@ import { Button } from "../ui/button"
 import { Turma } from "@/types/Turma";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect, useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createTurma, editTurma, excludeTurma } from "@/utils/api";
 
 const formSchema = z.object({
     nome: z.string().min(2).max(60),
@@ -17,6 +19,8 @@ const formSchema = z.object({
     ano: z.string(),
     detalhes: z.string().min(2, 'Digite algo aqui')
 })
+
+export type TurmaFormValues = z.infer<typeof formSchema>;
 
 type Props = {
     setClose: (a: boolean) => void,
@@ -48,85 +52,60 @@ export const ActionForm = ({ setClose, edit, data }: Props) => {
         },
     })
 
+    
+    const queryClient = useQueryClient();
+    
+    const addMutation = useMutation({
+        mutationFn: createTurma,
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ['turmas', token]
+            })
+        }
+    })
+    const editMutation = useMutation({
+        mutationFn: editTurma,
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ['turmas', token]
+            })
+        }
+    })
+    const deleteMutation = useMutation({
+        mutationFn: excludeTurma,
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ['turmas', token]
+            })
+        }
+    })
+
     const deleteTurmas = async (id: number) => {
-        const response = await fetch(`https://agendasenacapi-production.up.railway.app/turma/${id}`, {
-            method: 'DELETE',
-            headers: {
-              'Authorization': `Bearer ${token}`, 
-              'Content-Type': 'application/json'
-            }
-        });
-        response.ok ? console.log('ok') : ''
+        await deleteMutation.mutateAsync(id)
         setClose(false)
     }
-
-    const onSubmit = async (values: z.infer<typeof formSchema>) => {
-            if(!edit){
-                const response = await fetch('https://agendasenacapi-production.up.railway.app/turmas', {
-                    method: 'POST',
-                    headers: {
-                      'Content-Type': 'application/json',
-                      Authorization: `Bearer ${token}`,
-                    },
-                    body: JSON.stringify({
-                        curso: {
-                            idcursos: values.curso === 'Logistica' ? 1 : 2,  
-                          },
-                        periodo: values.periodo,
-                        anno: Number(values.ano),
-                        turno: values.turno.toUpperCase(),
-                        nomeTurma: values.nome,
-                        datalhesTurma: values.detalhes,
-                        }),
-                    
-                  });
-
-                  if(!response.ok){
-                    toast({
-                        title: 'Erro ao Criar Turma',
-                        description: `${response.json()}`,
-                        variant: 'destructive'
-                      })
-                  } else{
-                    toast({
-                        title: 'Turma Criada',
-                        description: `${values.nome} criada no sistema`
-                      })
-                  }
-            } else{
-                console.log(values)
-                const response = await fetch(`https://agendasenacapi-production.up.railway.app/turma/${data?.idturma}`, {
-                    method: 'PUT',
-                    headers: {
-                      'Content-Type': 'application/json',
-                      Authorization: `Bearer ${token}`,
-                    },
-                    body: JSON.stringify({
-                      periodo: values.periodo,
-                      anno: values.ano,
-                      turno: values.turno.toUpperCase(),
-                      nomeTurma: values.nome,
-                      datalhesTurma: values.detalhes,
-                      
-                    }),
-                  });
-
-                  if(!response.ok){
-                    toast({
-                        title: 'Erro ao Editar Turma',
-                        description: `${response.json()}`,
-                        variant: 'destructive'
-                      })
-                  } else{
-                    toast({
-                        title: 'Turma editada',
-                        description: `${values.nome} editada no sistema`
-                      })
-                  }
+    
+    
+    const onSubmit = async (values: TurmaFormValues) => {
+        const valuesEdit = {
+            id: data?.idturma as number,
+            values
+        }
+        try {
+            if (edit) {
+                await editMutation.mutateAsync(valuesEdit);
+                toast({ title: "Sucesso", description: "Turma editada com sucesso.", className: "bg-green-500 text-white" });
+            } else {
+                await addMutation.mutateAsync(values);
+                toast({ title: "Sucesso", description: "Turma criada com sucesso.", className: "bg-green-500 text-white" });
             }
-            
+
             setClose(false)
-    }
+            } catch (error) {
+            toast({ title: "Erro", description: "Falha ao salvar as alterações.", variant: "destructive" });
+            }
+        };
+
     return(
         <div>
             <Form {...form}>

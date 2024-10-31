@@ -4,8 +4,8 @@ import { Actions } from "@/components/estudantes/Actions"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { User } from "@/types/Estudante"
-import { getAlunos, req } from "@/utils/api"
-import { useQuery } from "@tanstack/react-query"
+import { excludeUser, getAlunos } from "@/utils/api"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { FaEdit } from "react-icons/fa";
@@ -56,17 +56,19 @@ const Page = () => {
         return nomeMatch && cursoMatch && turnoMatch
     });
 
-    const deleteAlunos = async (id: number) => {
-        console.log(id)
-        const response = await fetch(`${req}/user/${id}`, {
-            method: 'DELETE',
-            headers: {
-              'Authorization': `Bearer ${token}`, 
-              'Content-Type': 'application/json'
-            }
-          });
+    const queryClient = useQueryClient();
 
-          response.ok ? console.log('ok') : ''
+    const deleteMutation = useMutation({
+        mutationFn: excludeUser,
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ['alunos', token]
+            })
+        }
+    })
+
+    const deleteAlunos = async (id: number) => {
+        await deleteMutation.mutateAsync(id)
     }
 
     const openEditModal = (aluno: User) => {

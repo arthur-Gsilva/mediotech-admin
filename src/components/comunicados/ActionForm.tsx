@@ -9,6 +9,8 @@ import { Textarea } from "../ui/textarea";
 import { Comunicado } from "@/types/Comunicado";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect, useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createComunicado, editComunicado } from "@/utils/api";
 
 
 const formSchema = z.object({
@@ -16,6 +18,8 @@ const formSchema = z.object({
     conteudo: z.string(),
     tipo: z.enum(['INFORMATIVO', 'EVENTO'])
 })
+
+export type ComunicadoFormValues = z.infer<typeof formSchema>;
 
 type Props = {
     setClose: (a: boolean) => void,
@@ -45,64 +49,43 @@ export const ActionForm = ({ setClose, edit, data }: Props) => {
         },
     })
 
-    const onSubmit = async (values: z.infer<typeof formSchema>) => {
-        if(!edit){
-            const response = await fetch('https://agendasenacapi-production.up.railway.app/comunicados', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                  Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({
-                  tituloComunicado: values.titulo,
-                  tipodocomunicado: values.tipo,
-                  conteudoComunicado: values.conteudo,
-                  usersistema: {
-                    codigo: "1"
-                  }
-                }),
-              });
-
-              if(!response.ok){
-                toast({
-                    title: 'Erro ao Criar Comunicado',
-                    description: `${response.json()}`,
-                    variant: 'destructive'
-                  })
-              } else{
-                toast({
-                    title: 'Comunicado Criado',
-                    description: `${values.titulo} criado no sistema`
-                  })
-              }
-        } else{
-            const response = await fetch(`https://agendasenacapi-production.up.railway.app/comunicados/${data?.idComunicado}`, {
-                method: 'PATCH',
-                headers: {
-                  'Content-Type': 'application/json',
-                  Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({
-                  tituloComunicado: values.titulo,
-                  ConteudoComunicado: values.conteudo,
-                }),
-              });
-
-              if(!response.ok){
-                toast({
-                    title: 'Erro ao Editar Comunicado',
-                    description: `${response.json()}`,
-                    variant: 'destructive'
-                  })
-              } else{
-                toast({
-                    title: 'Comunicado Editado',
-                    description: `${values.titulo} Editado no sistema`
-                  })
-              }
+    const queryClient = useQueryClient();
+    
+    const addMutation = useMutation({
+        mutationFn: createComunicado,
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ['comunicados', token]
+            })
         }
-        
-          setClose(false)
+    })
+    const editMutation = useMutation({
+        mutationFn: editComunicado,
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ['comunicados', token]
+            })
+        }
+    })
+
+    const onSubmit = async (values: z.infer<typeof formSchema>) => {
+      const valuesEdit = {
+        id: data?.idComunicado as number,
+        values
+      }
+      try {
+        if (edit) {
+            await editMutation.mutateAsync(valuesEdit);
+            toast({ title: "Sucesso", description: "Comunicado editado com sucesso.", className: "bg-green-500 text-white" });
+        } else {
+            await addMutation.mutateAsync(values);
+            toast({ title: "Sucesso", description: "Comunicado criado com sucesso.", className: "bg-green-500 text-white" });
+        }
+
+        setClose(false)
+        } catch (error) {
+        toast({ title: "Erro", description: "Falha ao salvar as alterações.", variant: "destructive" });
+        }
     }
     return(
         <div>

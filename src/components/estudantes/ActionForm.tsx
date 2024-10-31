@@ -5,9 +5,9 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "../ui/input"
 import { Button } from "../ui/button"
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Turma } from "@/types/Turma";
-import { getTurmas } from "@/utils/api";
+import { createEstudante, editEstudante, getTurmas } from "@/utils/api";
 import { User } from "@/types/Estudante";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect, useState } from "react";
@@ -22,6 +22,8 @@ const formSchema = z.object({
     turma: z.number(),
     genero: z.enum(['Masculino', 'Feminino', ''])
 })
+
+export type UserFormValues = z.infer<typeof formSchema> 
 
 type Props = {
     setClose: (a: boolean) => void,
@@ -60,77 +62,44 @@ export const ActionForm = ({ setClose, data, edit }: Props) => {
         },
     })
 
-    const onSubmit  = async (values: z.infer<typeof formSchema>) => {
-        
-        if(!edit){
-            const response = await fetch('https://agendasenacapi-production.up.railway.app/register', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                  Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({
-                    tipoUser: 'ALUNO',
-                    nomeCompletoUser: values.nome,
-                    imailUser: values.email,
-                    contatopessoal: Number(values.contato),
-                    senhaAcessoUser: values.senha,
-                    dataNascimentoUser: values.dataNascimento,
-                    nomecontatoumergencia: 'SEM',
-                    numerourgencia: 'SEM',
-                    generoUser: values.genero,
-                    turma: {
-                        idturma: Number(values.turma)
-                    }
-                }),
-              });
+    const queryClient = useQueryClient();
+    
+    const addMutation = useMutation({
+        mutationFn: createEstudante,
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ['alunos', token]
+            })
+        }
+    })
+    const editMutation = useMutation({
+        mutationFn: editEstudante,
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ['alunos', token]
+            })
+        }
+    })
 
-              if(!response.ok){
-                toast({
-                    title: 'Erro ao Criar Estudante',
-                    description: `${response.json()}`,
-                    variant: 'destructive'
-                  })
-              } else{
-                toast({
-                    title: 'estudante Criado',
-                    description: `${values.nome} criada no sistema`
-                  })
-              }
-            } else{
-                const response = await fetch(`https://agendasenacapi-production.up.railway.app/register/${data?.codigo}`, {
-                    method: 'PATCH',
-                    headers: {
-                    'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        nomeCompletoUser: values.nome,
-                        imailUser: values.email,
-                        contatopessoal: Number(values.contato),
-                        senhaAcessoUser: values.senha,
-                        dataNascimentoUser: values.dataNascimento,
-                        generoUser: values.genero,
-                        turma: {
-                            idturma: Number(values.turma)
-                        }
-                    }),
-                });
-
-                if(!response.ok){
-                    toast({
-                        title: 'Erro ao Editar Estudante',
-                        description: `${response.json()}`,
-                        variant: 'destructive'
-                      })
-                  } else{
-                    toast({
-                        title: 'estudante Criado',
-                        description: `${values.nome} criado no sistema`
-                      })
-                  }
+    const onSubmit = async (values: UserFormValues) => {
+        const valuesEdit = {
+            id: data?.codigo as number,
+            values
+        }
+        try {
+            if (edit) {
+                await editMutation.mutateAsync(valuesEdit);
+                toast({ title: "Sucesso", description: "Aluno editado com sucesso.", className: "bg-green-500 text-white" });
+            } else {
+                await addMutation.mutateAsync(values);
+                toast({ title: "Sucesso", description: "Aluno criado com sucesso.", className: "bg-green-500 text-white" });
             }
+
             setClose(false)
-      }
+            } catch (error) {
+            toast({ title: "Erro", description: "Falha ao salvar as alterações.", variant: "destructive" });
+            }
+        };
 
 
       return(

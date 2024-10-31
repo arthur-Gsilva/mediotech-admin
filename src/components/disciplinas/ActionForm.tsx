@@ -6,9 +6,9 @@ import { Button } from "../ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form"
 import { Input } from "../ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { User } from "@/types/Estudante"
-import { getColaboradores, getTurmas } from "@/utils/api"
+import { createDisciplina, editDisciplina, excludeDisciplina, getColaboradores, getTurmas } from "@/utils/api"
 import { Turma } from "@/types/Turma"
 import { useToast } from "@/hooks/use-toast"
 import { useEffect, useState } from "react"
@@ -21,6 +21,8 @@ const formSchema = z.object({
     professor: z.string(),
     turma: z.string()
 })
+
+export type DisciFormValues = z.infer<typeof formSchema>
 
 type Props = {
     setClose: (a: boolean) => void,
@@ -64,87 +66,56 @@ export const ActionForm = ({ setClose, edit, data }: Props) => {
         },
     })
 
-    const deleteDisciplina = async (id: number) => {
-        console.log(id)
-        const response = await fetch(`https://agendasenacapi-production.up.railway.app/disciplinas/${id}`, {
-            method: 'DELETE',
-            headers: {
-              'Authorization': `Bearer ${token}`, 
-              'Content-Type': 'application/json'
-            }
-          });
+    const queryClient = useQueryClient();
+    
+    const addMutation = useMutation({
+        mutationFn: createDisciplina,
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ['disciplinas', token]
+            })
+        }
+    })
+    const editMutation = useMutation({
+        mutationFn: editDisciplina,
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ['disciplinas', token]
+            })
+        }
+    })
+    const deleteMutation = useMutation({
+        mutationFn: excludeDisciplina,
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ['disciplinas', token]
+            })
+        }
+    })
 
-          response.ok ? console.log('ok') : ''
+    const deleteDisciplina = async (id: number) => {
+        await deleteMutation.mutateAsync(id)
+        setClose(false)
     }
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
-        if(!edit){
-            const response = await fetch(`https://agendasenacapi-production.up.railway.app/disciplinas`, {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                  Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({
-                    nomeDaDisciplina: values.nome,
-                    detalhesAdicionais: values.detalhes,
-                    cargaHoraria: values.cargaHoraria,
-                    professor: {
-                        codigo: Number(values.professor)
-                    },
-                    turma: {
-                        idturma: Number(values.turma)
-                    }
-                })
-            })
-
-            if(!response.ok){
-                toast({
-                    title: 'Erro ao Criar disciplina',
-                    description: `${response.json()}`,
-                    variant: 'destructive'
-                  })
-              } else{
-                toast({
-                    title: 'disciplina Criada',
-                    description: `${values.nome} criada no sistema`
-                  })
-              }
-        } else {
-            const response = await fetch(`https://agendasenacapi-production.up.railway.app/disciplinas/${data?.idDisciplina}`, {
-                method: 'PATCH',
-                headers: {
-                  'Content-Type': 'application/json',
-                  Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({
-                    nomeDaDisciplina: values.nome,
-                    detalhesAdicionais: values.detalhes,
-                    cargaHoraria: values.cargaHoraria,
-                    professor: {
-                        codigo: Number(values.professor)
-                    },
-                    turma: {
-                        idturma: Number(values.turma)
-                    }
-                })
-            })
-
-            if(!response.ok){
-                toast({
-                    title: 'Erro ao Editar disciplina',
-                    description: `${response.json()}`,
-                    variant: 'destructive'
-                  })
-              } else{
-                toast({
-                    title: 'disciplina Editada',
-                    description: `${values.nome} Editado no sistema`
-                  })
-              }
+        const valuesEdit = {
+            id: data?.idDisciplina as number,
+            values
         }
+        try {
+            if (edit) {
+                await editMutation.mutateAsync(valuesEdit);
+                toast({ title: "Sucesso", description: "Disciplina editada com sucesso.", className: "bg-green-500 text-white" });
+            } else {
+                await addMutation.mutateAsync(values);
+                toast({ title: "Sucesso", description: "Disciplina criada com sucesso.", className: "bg-green-500 text-white" });
+            }
 
-        setClose(false)
+            setClose(false)
+            } catch (error) {
+            toast({ title: "Erro", description: "Falha ao salvar as alterações.", variant: "destructive" });
+            }
     }
 
     return(

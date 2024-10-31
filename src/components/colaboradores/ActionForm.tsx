@@ -8,21 +8,23 @@ import { Button } from "../ui/button"
 import { User } from "@/types/Estudante";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect, useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createColaborador, editColaborador } from "@/utils/api";
 
 
 
-const getFormSchema = (edit: boolean) => z.object({
+const formSchema = z.object({
     tipoUser: z.enum(['PROFESSOR', 'CORDENADOR', "ALUNO", 'ADMIN', '']),
     nome: z.string().min(2).max(60),
     email: z.string().email({ message: 'Email inválido' }),
     representante: z.string().optional(),
     contato: z.string(),
     dataNascimento: z.string().length(10),
-    senha: edit 
-        ? z.string().optional() 
-        : z.string().min(6, 'A senha deve conter pelo menos 6 dígitos'),
+    senha: z.string().min(6, 'A senha deve conter pelo menos 6 dígitos'),
     genero: z.enum(['Masculino', 'Feminino', ''])
 })
+
+export type ColaFormValues = z.infer<typeof formSchema> 
 
 type Props = {
     setClose: (a: boolean) => void,
@@ -32,7 +34,8 @@ type Props = {
 
 export const ActionForm = ({ setClose, data, edit }: Props) => {
 
-    const formSchema = getFormSchema(edit);
+
+    
 
     const { toast } = useToast()
 
@@ -57,83 +60,44 @@ export const ActionForm = ({ setClose, data, edit }: Props) => {
         },
     })
 
+    const queryClient = useQueryClient();
+    
+    const addMutation = useMutation({
+        mutationFn: createColaborador,
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ['colaboradores', token]
+            })
+        }
+    })
+    const editMutation = useMutation({
+        mutationFn: editColaborador,
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ['colaboradores', token]
+            })
+        }
+    })
+
 
     const onSubmit  = async (values: z.infer<typeof formSchema>) => {
-        if(!edit){
-            console.log(values)
-            const response = await fetch('https://agendasenacapi-production.up.railway.app/register', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                  
-                },
-                body: JSON.stringify({
-                    tipoUser: values.tipoUser.toUpperCase(),
-                    nomeCompletoUser: values.nome,
-                    imailUser: values.email,
-                    contatopessoal: values.contato,
-                    senhaAcessoUser: values.senha,
-                    dataNascimentoUser: values.dataNascimento,
-                    nomecontatoumergencia: 'SEM',
-                    numerourgencia: 'SEM',
-                    generoUser: values.genero,
-                    
-                }),
-              });
-
-              if(!response.ok){
-                toast({
-                    title: 'Erro ao cadastrar Usuário',
-                    description: `${response.json()}`,
-                    variant: 'destructive'
-                  })
-              } else{
-                toast({
-                    title: 'Colaborador adicionado',
-                    description: `${values.nome} adicionado ao sistema`
-                  })
-              }
-              
-              
-        } else{
-            console.log(values)
-            const response = await fetch(`https://agendasenacapi-production.up.railway.app/user/${data?.codigo}`, {
-                method: 'PATCH',
-                headers: {
-                  'Content-Type': 'application/json',
-                  Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({
-                    tipoUser: values.tipoUser.toUpperCase(),
-                    nomeCompletoUser: values.nome,
-                    imailUser: values.email,
-                    contatopessoal: values.contato,
-                    dataNascimentoUser: values.dataNascimento,
-                    nomecontatoumergencia: 'SEM',
-                    numerourgencia: 'SEM',
-                    generoUser: values.genero,
-                    turma: {
-                        idturma: null
-                    }
-                }),
-              });
-
-              if(!response.ok){
-                toast({
-                    title: 'Erro ao Editar Usuário',
-                    description: `${response.json()}`,
-                    variant: 'destructive'
-                  })
-              } else{
-                toast({
-                    title: 'Colaborador Editado',
-                    description: `${values.nome} Editado no sistema`
-                  })
-              }
+        const valuesEdit = {
+            id: data?.codigo as number,
+            values
         }
-        
+        try {
+            if (edit) {
+                await editMutation.mutateAsync(valuesEdit);
+                toast({ title: "Sucesso", description: "Colaborador editado com sucesso.", className: "bg-green-500 text-white" });
+            } else {
+                await addMutation.mutateAsync(values);
+                toast({ title: "Sucesso", description: "Colaborador criado com sucesso.", className: "bg-green-500 text-white" });
+            }
 
-          setClose(false)
+            setClose(false)
+            } catch (error) {
+            toast({ title: "Erro", description: "Falha ao salvar as alterações.", variant: "destructive" });
+            }
     }
 
     return(

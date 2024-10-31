@@ -10,8 +10,8 @@ import { ComuniModal } from "@/components/modals/ComuniModal";
 import { Comunicado } from "@/types/Comunicado";
 import { IoTrash } from "react-icons/io5";
 import { FaEdit } from "react-icons/fa";
-import { useQuery } from "@tanstack/react-query";
-import { getComunicados } from "@/utils/api";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { excludeComunicado, getComunicados } from "@/utils/api";
 import { DialogBase } from "@/components/DialogBase";
 import { TableSkeleton } from "@/components/Skeletons/TableSkeleton";
 
@@ -37,7 +37,7 @@ const Page = () => {
     }, [token, router]);
 
     const { data: comunicados, isLoading } = useQuery<Comunicado[]>({
-        queryKey: [],
+        queryKey: ['comunicados', token],
         queryFn: getComunicados,
         enabled: !!token
     })
@@ -65,16 +65,19 @@ const Page = () => {
         setIsDetailOpen(true)
     }
 
-    const deleteComunicados = async (id: number) => {
-        const response = await fetch(`https://agendasenacapi-production.up.railway.app/comunicados/${id}`, {
-            method: 'DELETE',
-            headers: {
-              'Authorization': `Bearer ${token}`, 
-              'Content-Type': 'application/json'
-            }
-          });
+    const queryClient = useQueryClient();
 
-          response.ok ? console.log('ok') : ''
+    const deleteMutation = useMutation({
+        mutationFn: excludeComunicado,
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ['comunicados', token]
+            })
+        }
+    })
+
+    const deleteComunicados = async (id: number) => {
+        await deleteMutation.mutateAsync(id)
     }
 
 
