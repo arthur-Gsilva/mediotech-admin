@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { FaEdit } from "react-icons/fa"
 import { IoTrash } from "react-icons/io5"
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 
 
 const Page = () => {
@@ -122,12 +123,28 @@ const Page = () => {
                                     <TableCell onClick={() => openDetailsModal(colaborador)}>{colaborador.imailUser}</TableCell>
                                     <TableCell className="flex text-white gap-2">
                                         <div className="bg-yellow-300 p-2 rounded-md cursor-pointer" onClick={() => openEditModal(colaborador)}><FaEdit /></div>
-                                        <div 
-                                            className="bg-red-600 p-2 rounded-md cursor-pointer"
-                                            onClick={() => deleteColaborador(colaborador.codigo)}
-                                        >
-                                                <IoTrash />
-                                        </div>
+                                        <AlertDialog>
+                                            <AlertDialogTrigger asChild>
+                                                <div 
+                                                    className="bg-red-600 p-2 rounded-md cursor-pointer"
+                                                >
+                                                        <IoTrash />
+                                                </div>
+                                            </AlertDialogTrigger>
+                                            <AlertDialogContent>
+                                                <AlertDialogHeader>
+                                                <AlertDialogTitle>Deseja excluir colaborador?</AlertDialogTitle>
+                                                <AlertDialogDescription>
+                                                    Importante ressaltar que essa ação é irreversível, ao clicar em excluir o colaborador será
+                                                    excluída permanentemente.
+                                                </AlertDialogDescription>
+                                                </AlertDialogHeader>
+                                                <AlertDialogFooter>
+                                                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                                <AlertDialogAction onClick={() => deleteColaborador(colaborador.codigo)}>Excluir</AlertDialogAction>
+                                                </AlertDialogFooter>
+                                            </AlertDialogContent>
+                                        </AlertDialog>
                                     </TableCell>
                                 </TableRow>
                                 ))}

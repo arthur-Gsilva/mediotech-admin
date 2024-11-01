@@ -13,7 +13,8 @@ import { useEffect, useState } from "react"
 type User = {
     Token: string,
     TipoUser: string,
-    NomeUsuario: string
+    NomeUsuario: string,
+    IdUser: string
   }
 
 const formSchema = z.object({
@@ -25,6 +26,7 @@ const Page = () => {
 
     const router = useRouter()
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false)
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -36,7 +38,7 @@ const Page = () => {
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         setError('');
-
+        setLoading(true)
         try {
             const response = await fetch('https://agendasenacapi-production.up.railway.app/login', {
                 method: 'POST',
@@ -61,6 +63,8 @@ const Page = () => {
         } catch (err) {
             setError('Email ou senha incorretos. Tente novamente.');
         }
+
+        setLoading(false)
     };
 
     const [userData, setUserData] = useState<User | null>(null);
@@ -71,6 +75,7 @@ const Page = () => {
                 window.localStorage.setItem('username', userData.NomeUsuario);
                 window.localStorage.setItem('tipoUser', userData.TipoUser);
                 window.localStorage.setItem('authToken', userData.Token);
+                window.localStorage.setItem('idUser', userData.IdUser);
 
                 if (userData.TipoUser === 'PROFESSOR') {
                     router.push('/turmas');
@@ -131,7 +136,18 @@ const Page = () => {
 
                             {error && <p className="text-center text-red-600">{error}</p>}
                             <div className="text-center">
-                                <Button type="submit" className="font-bold text-center">Entrar</Button>
+                                <Button type="submit" disabled={loading} className="font-bold text-center">
+                                    {loading && 
+                                        <>
+                                            carregando...
+                                        </>
+                                    }
+                                    {!loading && 
+                                        <>
+                                            Entrar
+                                        </>
+                                    }
+                                </Button>
                             </div>
 
                             

@@ -13,6 +13,7 @@ import { IoTrash } from "react-icons/io5";
 import { DialogBase } from "@/components/DialogBase";
 import { EstudanteModal } from "@/components/modals/EstudanteModal";
 import { TableSkeleton } from "@/components/Skeletons/TableSkeleton"
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 
 const Page = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -125,12 +126,28 @@ const Page = () => {
                                             <TableCell className="flex text-white gap-2">
                                                 <div className="bg-yellow-300 p-2 rounded-md cursor-pointer" onClick={() => openEditModal(estudante)}><FaEdit /></div>
                                                         
-                                                <div 
-                                                    className="bg-red-600 p-2 rounded-md cursor-pointer"
-                                                    onClick={() => deleteAlunos(estudante.codigo)}
-                                                >
-                                                        <IoTrash />
-                                                </div>
+                                                <AlertDialog>
+                                                    <AlertDialogTrigger asChild>
+                                                        <div 
+                                                            className="bg-red-600 p-2 rounded-md cursor-pointer"
+                                                        >
+                                                                <IoTrash />
+                                                        </div>
+                                                    </AlertDialogTrigger>
+                                                    <AlertDialogContent>
+                                                        <AlertDialogHeader>
+                                                        <AlertDialogTitle>Deseja excluir estudante?</AlertDialogTitle>
+                                                        <AlertDialogDescription>
+                                                            Importante ressaltar que essa ação é irreversível, ao clicar em excluir o estudante será
+                                                            excluída permanentemente.
+                                                        </AlertDialogDescription>
+                                                        </AlertDialogHeader>
+                                                        <AlertDialogFooter>
+                                                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                                        <AlertDialogAction onClick={() => deleteAlunos(estudante.codigo)}>Excluir</AlertDialogAction>
+                                                        </AlertDialogFooter>
+                                                    </AlertDialogContent>
+                                                </AlertDialog>
                                             </TableCell>
                                     </TableRow>
                                 ))}

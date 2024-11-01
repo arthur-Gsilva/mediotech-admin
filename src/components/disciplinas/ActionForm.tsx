@@ -12,6 +12,7 @@ import { createDisciplina, editDisciplina, excludeDisciplina, getColaboradores, 
 import { Turma } from "@/types/Turma"
 import { useToast } from "@/hooks/use-toast"
 import { useEffect, useState } from "react"
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../ui/alert-dialog"
 
 
 const formSchema = z.object({
@@ -223,14 +224,31 @@ export const ActionForm = ({ setClose, edit, data }: Props) => {
                     <div className="flex justify-between">
                         <Button type="submit">Enviar</Button>
                         
-                        
+                        {edit &&
+                            <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <Button variant="destructive" >Excluir</Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                    <AlertDialogTitle>Deseja excluir disciplina?</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                        Importante ressaltar que essa ação é irreversível, ao clicar em excluir a disciplina será
+                                        excluída permanentemente.
+                                    </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                    <AlertDialogAction onClick={() => deleteDisciplina(data?.idDisciplina as number)}>Excluir</AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
+                        }
                     </div>
                     
                 </form>
             </Form>
-            {edit &&
-                <Button variant="destructive" onClick={() => deleteDisciplina(data?.idDisciplina as number)}>Excluir</Button>
-            }
+            
         </div>
     )
 }

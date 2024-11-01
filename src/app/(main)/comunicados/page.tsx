@@ -14,6 +14,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { excludeComunicado, getComunicados } from "@/utils/api";
 import { DialogBase } from "@/components/DialogBase";
 import { TableSkeleton } from "@/components/Skeletons/TableSkeleton";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 
 
 const Page = () => {
@@ -76,7 +77,7 @@ const Page = () => {
         }
     })
 
-    const deleteComunicados = async (id: number) => {
+    const deleteComunicado = async (id: number) => {
         await deleteMutation.mutateAsync(id)
     }
 
@@ -120,12 +121,28 @@ const Page = () => {
                                                     className="flex text-white gap-2"
                                                 >
                                                 <div className="bg-yellow-300 p-2 rounded-md cursor-pointer" onClick={() => openEditModal(comunicado)}><FaEdit /></div>
-                                                <div 
-                                                    className="bg-red-600 p-2 rounded-md cursor-pointer"
-                                                    onClick={() => deleteComunicados(comunicado.idComunicado)}
-                                                >
-                                                        <IoTrash />
-                                                </div>
+                                                <AlertDialog>
+                                                    <AlertDialogTrigger asChild>
+                                                        <div 
+                                                            className="bg-red-600 p-2 rounded-md cursor-pointer"
+                                                        >
+                                                                <IoTrash />
+                                                        </div>
+                                                    </AlertDialogTrigger>
+                                                    <AlertDialogContent>
+                                                        <AlertDialogHeader>
+                                                        <AlertDialogTitle>Deseja excluir colaborador?</AlertDialogTitle>
+                                                        <AlertDialogDescription>
+                                                            Importante ressaltar que essa ação é irreversível, ao clicar em excluir o colaborador será
+                                                            excluída permanentemente.
+                                                        </AlertDialogDescription>
+                                                        </AlertDialogHeader>
+                                                        <AlertDialogFooter>
+                                                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                                        <AlertDialogAction onClick={() => deleteComunicado(comunicado.idComunicado)}>Excluir</AlertDialogAction>
+                                                        </AlertDialogFooter>
+                                                    </AlertDialogContent>
+                                                </AlertDialog>
                                         </TableCell>
                                     </TableRow>
                                 ))}

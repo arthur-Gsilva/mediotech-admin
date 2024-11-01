@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createTurma, editTurma, excludeTurma } from "@/utils/api";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../ui/alert-dialog"
 
 const formSchema = z.object({
     nome: z.string().min(2).max(60),
@@ -226,9 +227,26 @@ export const ActionForm = ({ setClose, edit, data }: Props) => {
                     />
                     
                     <div className="flex justify-between">
-                        <Button type="submit">Submit</Button>
+                        <Button type="submit">Enviar</Button>
                         {edit &&
-                            <Button variant="destructive" onClick={() => deleteTurmas(data?.idturma as number)}>Excluir</Button>
+                            <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <Button variant="destructive" >Excluir</Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                    <AlertDialogTitle>Deseja excluir turma?</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                        Importante ressaltar que essa ação é irreversível, ao clicar em excluir a turma será
+                                        excluída permanentemente.
+                                    </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                    <AlertDialogAction onClick={() => deleteTurmas(data?.idturma as number)}>Excluir</AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
                         }
                         
                     </div>
