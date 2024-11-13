@@ -46,7 +46,7 @@ const Page = () => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    userEmail: values.userEmail,
+                    userEmail: values.userEmail.toLowerCase(),
                     userSenha: values.password,
                 }),
             });

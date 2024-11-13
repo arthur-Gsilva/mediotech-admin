@@ -14,6 +14,8 @@ const Page = () => {
 
     const [filtro, setFiltro] = useState('')
     const [userTipo, setUserTipo] = useState<string | null>('')
+    const [userId, setUserId] = useState<string | null>('') 
+
 
     const router = useRouter();
     const [token, setToken] = useState<string | null>(null)
@@ -22,8 +24,10 @@ const Page = () => {
         if (typeof window !== 'undefined') {
             const authToken = window.localStorage.getItem('authToken');
             const tipoUser = window.localStorage.getItem('tipoUser')
+            const idUser = window.localStorage.getItem('idUser')
             setUserTipo(tipoUser)
             setToken(authToken);
+            setUserId(idUser)
         }
     }, []); 
 
@@ -37,7 +41,7 @@ const Page = () => {
 
     const { data: disciplinas, isLoading } = useQuery<Disciplina[]>({
         queryKey: ['disciplinas', token],
-        queryFn: userTipo === 'PROFESSOR' ? () => getDisciplinaByProfessor(404) : getDisciplinas,
+        queryFn: userTipo === 'PROFESSOR' ? () => getDisciplinaByProfessor(parseInt(userId as string)) : getDisciplinas,
         enabled: !!token
     })
 

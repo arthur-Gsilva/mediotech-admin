@@ -16,6 +16,7 @@ const Page = () => {
     const [periodo, setPeriodo] = useState('');
     const [ano, setAno] = useState(''); 
     const [userTipo, setUserTipo] = useState<string | null>('') 
+    const [userId, setUserId] = useState<string | null>('') 
 
     const router = useRouter();
     const [token, setToken] = useState<string | null>(null)
@@ -24,8 +25,10 @@ const Page = () => {
         if (typeof window !== 'undefined') {
             const authToken = window.localStorage.getItem('authToken');
             const tipoUser = window.localStorage.getItem('tipoUser')
+            const idUser = window.localStorage.getItem('idUser')
             setUserTipo(tipoUser)
             setToken(authToken);
+            setUserId(idUser)
         }
     }, []); 
 
@@ -39,7 +42,7 @@ const Page = () => {
 
     const { data: turmas, isLoading } = useQuery<Turma[]>({
         queryKey: ['turmas', token],
-        queryFn:  userTipo === 'PROFESSOR' ? () =>  getTurmasByProfessor(404) : getTurmas,
+        queryFn:  userTipo === 'PROFESSOR' ? () =>  getTurmasByProfessor(parseInt(userId as string)) : getTurmas,
         enabled: !!token
     })
 

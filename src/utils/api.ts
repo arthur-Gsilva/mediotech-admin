@@ -8,6 +8,7 @@ import axios from "axios";
 
 const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : ''
 
+
 export const req = axios.create({
     baseURL: 'https://agendasenacapi-production.up.railway.app'
 })
@@ -62,7 +63,7 @@ export const getDisciplinas = async () => {
 };
 
 export const getTurmasByProfessor = async (idProfessor: number) => {
-    const response = await req.get(`/disciplinas/professor/${idProfessor}`, {
+    const response = await req.get(`disciplinas/professor/${idProfessor}`, {
         headers: {
             Authorization: `Bearer ${token}`
         }
@@ -100,9 +101,9 @@ export const getDisciplinaByProfessor = async (idProfessor: number) => {
 
 export const createTurma = async (values: TurmaFormValues) => {
     const response = await req.post(`/turmas`, {
-        curso: { idcursos: values.curso === 'Logistica' ? 1 : 2 },
+        curso: { idCurso: values.curso === 'Logistica' ? 2 : 1 },
         periodo: values.periodo,
-        anno: Number(values.ano),
+        anno: values.ano,
         turno: values.turno.toUpperCase(),
         nomeTurma: values.nome,
         datalhesTurma: values.detalhes,
@@ -221,9 +222,9 @@ type EditComunicado = {
 }
 export const editTurma = async ({ id, values }: EditTurma) => {
     const response = await req.put(`/turma/${id}`, {
-        curso: { idcursos: values.curso === 'Logistica' ? 1 : 2 },
+        curso: { idCurso: values.curso === 'Logistica' ? 2 : 1 },
         periodo: values.periodo,
-        anno: Number(values.ano),
+        anno: values.ano,
         turno: values.turno.toUpperCase(),
         nomeTurma: values.nome,
         datalhesTurma: values.detalhes,

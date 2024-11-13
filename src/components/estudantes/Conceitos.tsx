@@ -39,22 +39,22 @@ export const Conceitos = ({ data }: Props) => {
                 </TableHeader>
 
                 <TableBody>
-                {avaliacoes?.map((avaliacao, index) => {
-                const conceito1 = avaliacao.conceito.notaConceito; 
-                const conceito2 = Number(avaliacao.ordemlancameneto);
-                
-                
-                const mediaFinal = ((conceito1 + conceito2) / 2).toFixed(2); // Média com duas casas decimais
+                    {avaliacoes?.map((avaliacao, index) => {
+                    const conceito1 = avaliacao.conceito.notaConceito; 
+                    const conceito2 = Number(avaliacao.ordemlancameneto);
+                    
+                    
+                    const mediaFinal = ((conceito1 + conceito2) / 2).toFixed(2); // Média com duas casas decimais
 
-                return (
-                    <TableRow key={index}>
-                        <TableCell>{avaliacao.disciplina.nomeDaDisciplina}</TableCell>
-                        <TableCell>{conceito1}</TableCell>
-                        <TableCell>{conceito2}</TableCell>
-                        <TableCell>{mediaFinal}</TableCell>
-                    </TableRow>
-                );
-            })}
+                    return (
+                        <TableRow key={index}>
+                            <TableCell>{avaliacao.disciplina.nomeDaDisciplina}</TableCell>
+                            <TableCell>{conceito1}</TableCell>
+                            <TableCell>{conceito2}</TableCell>
+                            <TableCell>{mediaFinal}</TableCell>
+                        </TableRow>
+                    );
+                })}
                 </TableBody>
             </Table>
         </div>

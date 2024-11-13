@@ -1,10 +1,13 @@
-import { Button } from "@/components/ui/button"
+import { redirect } from "next/navigation"
+
 
 const Page = () => {
+
+    redirect('/login')
+
     return(
         <div>
             <h4>cachorro</h4>
-            <Button variant='destructive'>Clica ai pai</Button>
         </div>
     )
 }

@@ -15,8 +15,8 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 const formSchema = z.object({
     nome: z.string().min(2).max(60),
     turno: z.enum(["MANHÃ", "TARDE", "Noite"]),
-    curso: z.enum(["Medio Tec Analise e Desenvolvimento de Sistema", "Logistica", ""]),
     periodo: z.string(),
+    curso: z.enum(["Analise e Desenvolvimento de Sistema", "Logistica", ""]),
     ano: z.string(),
     detalhes: z.string().min(2, 'Digite algo aqui')
 })
@@ -46,8 +46,8 @@ export const ActionForm = ({ setClose, edit, data }: Props) => {
         defaultValues: {
           nome: data?.nomeTurma || '',
           turno: data?.turno || 'MANHÃ',
-          curso: data?.curso.nomecurso || '',
           periodo: data?.periodo || '',
+          curso: data?.curso.nomecurso || '',
           ano: data?.anno || '',
           detalhes: data?.detalhesTurma || ''
         },
@@ -125,53 +125,9 @@ export const ActionForm = ({ setClose, edit, data }: Props) => {
                             </FormItem>
                         )}
                     />
-
-                    
-                    <FormField
-                        control={form.control}
-                        name="turno"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Turno</FormLabel>
-                                <FormControl>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                    <SelectTrigger>
-                                    <SelectValue placeholder="Selecione o turno" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                    <SelectItem value="MANHÃ">Manhã</SelectItem>
-                                    <SelectItem value="TARDE">Tarde</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                            )}
-                    />
                         
 
                     <div className="flex gap-2 [&>*]:flex-1">
-                        <FormField
-                            control={form.control}
-                            name="curso"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Curso</FormLabel>
-                                    <FormControl>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                        <SelectTrigger>
-                                        <SelectValue placeholder="Selecione o curso" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                        <SelectItem value="Medio Tec Analise e Desenvolvimento de Sistema">Desenvolvimento de Sistemas</SelectItem>
-                                        <SelectItem value="Logistica">Logística</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
                         <FormField
                             control={form.control}
                             name="periodo"
@@ -194,7 +150,51 @@ export const ActionForm = ({ setClose, edit, data }: Props) => {
                                 </FormItem>
                             )}
                         />
+
+                        <FormField
+                        control={form.control}
+                        name="turno"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Turno</FormLabel>
+                                <FormControl>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <SelectTrigger>
+                                    <SelectValue placeholder="Selecione o turno" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                    <SelectItem value="MANHÃ">Manhã</SelectItem>
+                                    <SelectItem value="TARDE">Tarde</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                            )}
+                        />
                     </div>
+
+                    <FormField
+                        control={form.control}
+                        name="curso"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Curso</FormLabel>
+                                <FormControl>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <SelectTrigger>
+                                    <SelectValue placeholder="Selecione o curso" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                    <SelectItem value="Analise e Desenvolvimento de Sistema">Desenvolvimento de Sistemas</SelectItem>
+                                    <SelectItem value="Logistica">Logística</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                        />
 
                     <FormField
                         control={form.control}
