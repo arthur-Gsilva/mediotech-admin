@@ -47,7 +47,6 @@ export const ActionForm = ({ setClose, edit, data }: Props) => {
           nome: data?.nomeTurma || '',
           turno: data?.turno || 'MANHÃ',
           periodo: data?.periodo || '',
-          curso: data?.curso.nomecurso || '',
           ano: data?.anno || '',
           detalhes: data?.detalhesTurma || ''
         },

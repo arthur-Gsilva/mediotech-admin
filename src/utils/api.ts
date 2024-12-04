@@ -7,10 +7,15 @@ import { User } from "@/types/Estudante";
 import axios from "axios";
 
 const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : ''
-
+const idUser = typeof window !== 'undefined' ? localStorage.getItem('idUser') : ''
 
 export const req = axios.create({
-    baseURL: 'https://agendasenacapi-production.up.railway.app'
+    baseURL: 'https://agendasenacapi-production.up.railway.app',
+    headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        Pragma: 'no-cache',
+        Expires: '0',
+    }
 })
 
 export const getAlunos = async () => {
@@ -30,7 +35,7 @@ export const getColaboradores = async () => {
       },
     });
     const data = response.data;
-    return data.filter((usuario: User) => usuario.tipoUser === 'PROFESSOR' || usuario.tipoUser === 'CORDENADOR');
+    return data.filter((usuario: User) => usuario.tipoUser === 'PROFESSOR' || usuario.tipoUser === 'COORDENADOR');
 };
 
 export const getTurmas = async () => {
@@ -65,7 +70,7 @@ export const getDisciplinas = async () => {
 export const getTurmasByProfessor = async (idProfessor: number) => {
     const response = await req.get(`disciplinas/professor/${idProfessor}`, {
         headers: {
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token}`,
         }
     })
 
@@ -81,7 +86,7 @@ export const getAvaliacoes = async (idAluno: number) => {
     })
 
     const data = response.data;
-    return data
+    return data.data
 }
 
 
@@ -94,6 +99,12 @@ export const getDisciplinaByProfessor = async (idProfessor: number) => {
 
     const data = response.data;
     return data
+}
+
+export const getDisciplinaByAluno = async (idAluno: number) => {
+    const response = await req.get(`user/${idAluno}`)
+    const data = response.data
+    return data.turma.curso.disciplinas
 }
 
 
@@ -185,7 +196,7 @@ export const createComunicado = async (values: ComunicadoFormValues) => {
         tipodocomunicado: values.tipo,
         conteudoComunicado: values.conteudo,
         usersistema: {
-        codigo: "1"
+        codigo: idUser
         }
     }, {
         headers: {

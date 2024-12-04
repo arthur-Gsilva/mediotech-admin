@@ -62,8 +62,7 @@ export const ActionForm = ({ setClose, edit, data }: Props) => {
           nome: data?.nomeDaDisciplina || '',
           detalhes: data?.detalhesAdicionais || '',
           cargaHoraria: data?.cargaHoraria || '',
-          professor: data?.provessorid.toString() || '',
-          turma: data?.idturma.toString() || ''
+          professor: data?.professorId.toString() || '',
         },
     })
 

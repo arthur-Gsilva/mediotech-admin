@@ -51,7 +51,7 @@ const Page = () => {
 
     const alunosFiltrados = alunos?.filter(aluno => {
         const nomeMatch = (aluno.nomeCompletoUser || "").toLowerCase().includes(filtro.toLowerCase())
-        const cursoMatch = curso === 'all' || !curso || aluno.turma.curso.nomecurso.toLowerCase() === curso.toLowerCase();
+        const cursoMatch = curso === 'all' || !curso || aluno.turma.curso.nomeCurso.toLowerCase() === curso.toLowerCase();
         const turnoMatch = turno === 'all' || !turno || aluno.turma.turno.toLowerCase() === turno.toLowerCase();
 
         return nomeMatch && cursoMatch && turnoMatch
@@ -119,7 +119,7 @@ const Page = () => {
                                     <TableRow key={index} className="cursor-pointer">
                                             <TableCell className="font-medium" onClick={() => openDetailsModal(estudante)}>{estudante.codigo}</TableCell>
                                             <TableCell onClick={() => openDetailsModal(estudante)}>{estudante.nomeCompletoUser}</TableCell>
-                                            <TableCell onClick={() => openDetailsModal(estudante)}>{estudante.turma?.curso?.nomecurso || "Sem curso"}</TableCell>
+                                            <TableCell onClick={() => openDetailsModal(estudante)}>{estudante.turma?.curso?.nomeCurso || "Sem curso"}</TableCell>
                                             <TableCell onClick={() => openDetailsModal(estudante)}>{estudante.turma?.nomeTurma}</TableCell>
                                             <TableCell onClick={() => openDetailsModal(estudante)}>{estudante.turma?.turno}</TableCell>
                                             <TableCell onClick={() => openDetailsModal(estudante)}>{estudante.numerourgencia}</TableCell>

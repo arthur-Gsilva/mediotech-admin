@@ -33,7 +33,7 @@ export const TurmaBox = ({ data }: Props) => {
             </CardHeader>
             <CardContent>
                 <div>id: {data.idturma}</div>
-                <div>Curso: {data.curso && data.curso.nomecurso || 'Á definir' }</div>
+                <div>Curso: {data.curso && data.curso.nomeCurso || 'Á definir' }</div>
                 <div>Turno: {data.turno}</div>
             </CardContent>
 

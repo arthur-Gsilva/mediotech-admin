@@ -14,7 +14,7 @@ import { createColaborador, editColaborador } from "@/utils/api";
 
 
 const formSchema = z.object({
-    tipoUser: z.enum(['PROFESSOR', 'CORDENADOR', "ALUNO", 'ADMIN', '']),
+    tipoUser: z.enum(['PROFESSOR', 'COORDENADOR', "ALUNO", 'ADMIN', '']),
     nome: z.string().min(2).max(60),
     email: z.string().email({ message: 'Email inválido' }),
     representante: z.string().optional(),
@@ -33,9 +33,6 @@ type Props = {
 }
 
 export const ActionForm = ({ setClose, data, edit }: Props) => {
-
-
-    
 
     const { toast } = useToast()
 
@@ -130,7 +127,7 @@ export const ActionForm = ({ setClose, data, edit }: Props) => {
                                         <SelectValue placeholder="Selecione o Cargo" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                        <SelectItem value="CORDENADOR">Coordenador</SelectItem>
+                                        <SelectItem value="COORDENADOR">Coordenador</SelectItem>
                                         <SelectItem value="PROFESSOR">Professor</SelectItem>
                                         </SelectContent>
                                     </Select>

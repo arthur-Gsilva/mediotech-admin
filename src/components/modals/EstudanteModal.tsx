@@ -26,7 +26,7 @@ export const EstudanteModal = ({ isOpen, onClose, data }: Props) => {
                     <p>Responsável: {data?.numerourgencia}</p>
                     <p>Turma: {data?.turma.nomeTurma}</p>
                     <p>Turno: {data?.turma.turno}</p>
-                    <p>Curso: {data?.turma.curso.nomecurso}</p>
+                    <p>Curso: {data?.turma.curso.nomeCurso}</p>
                     <p>Data de Nascimento: {data?.dataNascimentoUser}</p>
                     <p>Gênero: {data?.generoUser}</p>
                 </div>

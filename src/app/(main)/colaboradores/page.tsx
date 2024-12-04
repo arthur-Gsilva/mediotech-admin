@@ -100,10 +100,9 @@ const Page = () => {
                             <TableHead className="w-[100px]">Id</TableHead>
                             <TableHead>Nome</TableHead>
                             <TableHead>Cargo</TableHead>
-                            <TableHead>Turno</TableHead>
                             <TableHead>Telefone</TableHead>
                             <TableHead>Email</TableHead>
-                            <TableHead>Aões</TableHead>
+                            <TableHead>Ações</TableHead>
                             </TableRow>
                         </TableHeader>
 
@@ -118,7 +117,6 @@ const Page = () => {
                                     <TableCell onClick={() => openDetailsModal(colaborador)} className="font-medium">{colaborador.codigo}</TableCell>
                                     <TableCell onClick={() => openDetailsModal(colaborador)}>{colaborador.nomeCompletoUser}</TableCell>
                                     <TableCell onClick={() => openDetailsModal(colaborador)}>{colaborador.tipoUser}</TableCell>
-                                    <TableCell onClick={() => openDetailsModal(colaborador)}>{colaborador.turma?.turno || "Sem turno"}</TableCell>
                                     <TableCell onClick={() => openDetailsModal(colaborador)}>{colaborador.contatopessoal}</TableCell>
                                     <TableCell onClick={() => openDetailsModal(colaborador)}>{colaborador.imailUser}</TableCell>
                                     <TableCell className="flex text-white gap-2">

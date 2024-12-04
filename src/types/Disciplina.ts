@@ -5,7 +5,7 @@ export type Disciplina = {
     cargaHoraria: string;
     nomeprofessor: string;
     contatoprofessor: string;
-    provessorid: number,
+    professorId: number,
     idturma: number,
     nomeTurma: string,
     ano: string

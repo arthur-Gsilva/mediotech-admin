@@ -5,7 +5,6 @@ import { User } from "./Estudante";
 export type Turma = {
     idturma: number,
     curso: Curso,
-    disciplinas: Disciplina,
     usersistema: null,
     periodo: string,
     anno: string,

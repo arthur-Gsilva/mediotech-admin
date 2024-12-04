@@ -37,7 +37,7 @@ export const Actions = ({ onTurnoChange, onCargoChange, onFiltroChange }: Props)
                         <SelectGroup>
                         <SelectItem value="all">Todos</SelectItem>
                         <SelectItem value="professor">Professor</SelectItem>
-                        <SelectItem value="cordenador">Coordenador</SelectItem>
+                        <SelectItem value="coordenador">Coordenador</SelectItem>
                         </SelectGroup>
                     </SelectContent>
                 </Select>

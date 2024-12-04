@@ -44,7 +44,7 @@ export const TurmaModal = ({ isOpen, onClose, data }: Props) => {
                 </DialogHeader>
                 <div className='flex flex-col gap-2'>
                     <p>Representante: {data.representante && data.representante.codigo || 'Á definir'}</p>
-                    <p>Curso Técnologo: {data.curso && data.curso.nomecurso || 'Á definir' }</p>
+                    <p>Curso Técnologo: {data.curso && data.curso.nomeCurso || 'Á definir' }</p>
                     <p>Disciplinas: (botão ou PNG)</p>
                     <p>Turno: {data.turno}</p>
                     <p>Horário: (botão ou PNG)</p>

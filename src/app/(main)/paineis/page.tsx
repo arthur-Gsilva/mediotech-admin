@@ -11,6 +11,10 @@ import { Alunobox } from "@/components/dashboards/Alunobox";
 import { MiddleArea } from "@/components/dashboards/MiddleArea";
 import { useRouter } from 'next/navigation';
 import {  useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { User } from "@/types/Estudante";
+import { getAlunos, getColaboradores, getDisciplinas } from "@/utils/api";
+import { Disciplina } from "@/types/Disciplina";
 
 
 const Page = () => {
@@ -33,6 +37,24 @@ const Page = () => {
         }
     }, [token, router]);
 
+    const { data: alunos } = useQuery<User[]>({
+        queryKey: ['alunos', token],
+        queryFn: getAlunos,
+        enabled: !!token
+    })
+
+    const { data: colaboradores } = useQuery<User[]>({
+        queryKey: ['colaboradores', token],
+        queryFn: getColaboradores,
+        enabled: !!token
+    })
+
+    const { data: disciplinas } = useQuery<Disciplina[]>({
+        queryKey: ['disciplinas', token],
+        queryFn: getDisciplinas,
+        enabled: !!token
+    })
+
 
     const etariaData = [
         { idade: 14, alunos: 89},
@@ -50,12 +72,19 @@ const Page = () => {
       } satisfies ChartConfig
 
 
-    const anoData = [
-        { ano: '1º ano', alunos: 277},
-        { ano: '2º ano', alunos: 135},
-        { ano: '3º ano', alunos: 169},
-    ]
-
+    const anoData = alunos?.reduce((acc, aluno) => {
+        const ano = `${aluno.turma.periodo}º ano`;
+        const existing = acc.find((item) => item.ano === ano);
+    
+    if (existing) {
+        existing.alunos++;
+    } else {
+        acc.push({ ano, alunos: 1 });
+    }
+    
+        return acc;
+    }, [] as { ano: string; alunos: number }[]);
+    
     const anoConfig = {
         idade: {
           label: "ano",
@@ -117,9 +146,9 @@ const Page = () => {
 
                 <div className="flex flex-col gap-10 items-center mx-auto md:mx-0">
                     <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
-                        <Alunobox title="Alunos" number={18}/>
-                        <Alunobox title="Professores" number={12}/>
-                        <Alunobox title="disciplinas" number={9}/>
+                        <Alunobox title="Alunos" number={alunos?.length as number}/>
+                        <Alunobox title="Professores" number={colaboradores?.length as number}/>
+                        <Alunobox title="disciplinas" number={disciplinas?.length as number}/>
                     </div>
                     <MiddleArea />
                 </div>

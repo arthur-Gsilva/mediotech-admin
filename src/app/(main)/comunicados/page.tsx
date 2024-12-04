@@ -100,6 +100,7 @@ const Page = () => {
                             <TableHead className="w-[100px]">ID</TableHead>
                             <TableHead>Tipo</TableHead>
                             <TableHead>Título</TableHead>
+                            <TableHead>Conteúdo</TableHead>
                             <TableHead>data</TableHead>
                             <TableHead>Ações</TableHead>
                             </TableRow>
@@ -116,6 +117,7 @@ const Page = () => {
                                         <TableCell className="font-medium" onClick={() => openDetailsModal(comunicado)}>#{comunicado.idComunicado}</TableCell>
                                             <TableCell onClick={() => openDetailsModal(comunicado)}>{comunicado.tipodocomunicado}</TableCell>
                                             <TableCell onClick={() => openDetailsModal(comunicado)}>{comunicado.tituloComunicado}</TableCell>
+                                            <TableCell onClick={() => openDetailsModal(comunicado)}>{comunicado.conteudoComunicado}</TableCell>
                                             <TableCell onClick={() => openDetailsModal(comunicado)}>{comunicado.dataPulicacao}</TableCell>
                                             <TableCell 
                                                     className="flex text-white gap-2"
