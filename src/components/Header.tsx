@@ -1,8 +1,6 @@
 'use client'
 
 import { AiOutlineMenu } from "react-icons/ai";
-
-import { usePathname } from "next/navigation"
 import { useContext, useEffect, useState } from "react";
 import { MenuContext } from "@/contexts/MenuContext";
 import { AiOutlineBell } from "react-icons/ai";
@@ -11,7 +9,6 @@ import { SlOptionsVertical } from "react-icons/sl";
 
 export const Header = () => {
 
-    const pathname = usePathname()
     const menuCtx = useContext(MenuContext)
     const [nomeUser, setNomeUser] = useState<string | null>()
     const [tipoUser, setTipoUser] = useState<string | null>()

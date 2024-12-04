@@ -1,5 +1,4 @@
 import { Curso } from "./Curso";
-import { Disciplina } from "./Disciplina";
 import { User } from "./Estudante";
 
 export type Turma = {
