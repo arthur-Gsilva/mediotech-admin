@@ -11,7 +11,7 @@ import { Comunicado } from "@/types/Comunicado";
 import { IoTrash } from "react-icons/io5";
 import { FaEdit } from "react-icons/fa";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { excludeComunicado, getComunicados } from "@/utils/api";
+import { excludeComunicado, getComunicados } from "@/utils/api/comunicado";
 import { DialogBase } from "@/components/DialogBase";
 import { TableSkeleton } from "@/components/Skeletons/TableSkeleton";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
@@ -133,10 +133,10 @@ const Page = () => {
                                                     </AlertDialogTrigger>
                                                     <AlertDialogContent>
                                                         <AlertDialogHeader>
-                                                        <AlertDialogTitle>Deseja excluir colaborador?</AlertDialogTitle>
+                                                        <AlertDialogTitle>Deseja excluir comunicado?</AlertDialogTitle>
                                                         <AlertDialogDescription>
-                                                            Importante ressaltar que essa ação é irreversível, ao clicar em excluir o colaborador será
-                                                            excluída permanentemente.
+                                                            Importante ressaltar que essa ação é irreversível, ao clicar em excluir o comunicado será
+                                                            excluído permanentemente.
                                                         </AlertDialogDescription>
                                                         </AlertDialogHeader>
                                                         <AlertDialogFooter>

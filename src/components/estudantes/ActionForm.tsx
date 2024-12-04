@@ -7,7 +7,8 @@ import { Input } from "../ui/input"
 import { Button } from "../ui/button"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Turma } from "@/types/Turma";
-import { createEstudante, editEstudante, getTurmas } from "@/utils/api";
+import { createEstudante, editEstudante } from "@/utils/api/user";
+import { getTurmas } from "@/utils/api/turma";
 import { User } from "@/types/Estudante";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect, useState } from "react";

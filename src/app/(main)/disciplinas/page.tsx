@@ -7,7 +7,7 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { useQuery } from "@tanstack/react-query"
 import { Disciplina } from "@/types/Disciplina"
-import { getDisciplinaByProfessor, getDisciplinas } from "@/utils/api"
+import { getDisciplinaByProfessor, getDisciplinas } from "@/utils/api/disciplina"
 import { BoxSkeleton } from "@/components/Skeletons/BoxSkeleton"
 
 const Page = () => {

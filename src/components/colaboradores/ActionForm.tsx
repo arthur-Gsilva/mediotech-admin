@@ -9,7 +9,7 @@ import { User } from "@/types/Estudante";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createColaborador, editColaborador } from "@/utils/api";
+import { createColaborador, editColaborador } from "@/utils/api/user";
 
 
 

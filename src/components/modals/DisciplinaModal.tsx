@@ -1,4 +1,3 @@
-
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog"
 import { Disciplina } from "@/types/Disciplina"
 

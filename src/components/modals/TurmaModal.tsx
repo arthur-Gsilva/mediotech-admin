@@ -6,7 +6,7 @@ import { useEffect, useState } from "react"
 import { ActionForm } from "../estudantes/ActionForm"
 import { useQuery } from "@tanstack/react-query"
 import { User } from "@/types/Estudante"
-import { getAlunos } from "@/utils/api"
+import { getAlunos } from "@/utils/api/user"
 
 type Props = {
     isOpen: boolean,

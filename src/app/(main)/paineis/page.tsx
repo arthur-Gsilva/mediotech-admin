@@ -13,7 +13,8 @@ import { useRouter } from 'next/navigation';
 import {  useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { User } from "@/types/Estudante";
-import { getAlunos, getColaboradores, getDisciplinas } from "@/utils/api";
+import { getAlunos, getColaboradores } from "@/utils/api/user";
+import { getDisciplinas } from '@/utils/api/disciplina'
 import { Disciplina } from "@/types/Disciplina";
 
 

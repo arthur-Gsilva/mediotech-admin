@@ -1,5 +1,6 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table"
-import { getAvaliacoes, getDisciplinaByProfessor } from "@/utils/api"
+import { getDisciplinaByProfessor } from "@/utils/api/disciplina"
+import { getAvaliacoes } from "@/utils/api"
 import { useQuery } from "@tanstack/react-query"
 
 import { Avaliacao } from "@/types/Avaliacao"

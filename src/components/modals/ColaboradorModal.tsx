@@ -2,7 +2,7 @@ import { User } from "@/types/Estudante"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog"
 import { useQuery } from "@tanstack/react-query"
 import { Disciplina } from "@/types/Disciplina"
-import { getTurmasByProfessor } from "@/utils/api"
+import { getTurmasByProfessor } from "@/utils/api/turma"
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
 import { useEffect, useState } from "react"
 

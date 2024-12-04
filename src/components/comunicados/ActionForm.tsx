@@ -10,7 +10,7 @@ import { Comunicado } from "@/types/Comunicado";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createComunicado, editComunicado } from "@/utils/api";
+import { createComunicado, editComunicado } from "@/utils/api/comunicado";
 
 
 const formSchema = z.object({

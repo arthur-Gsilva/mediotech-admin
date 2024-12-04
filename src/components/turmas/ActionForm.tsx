@@ -9,7 +9,7 @@ import { Turma } from "@/types/Turma";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createTurma, editTurma, excludeTurma } from "@/utils/api";
+import { createTurma, editTurma, excludeTurma } from "@/utils/api/turma";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../ui/alert-dialog"
 
 const formSchema = z.object({
