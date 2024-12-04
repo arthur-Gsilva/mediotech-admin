@@ -33,7 +33,7 @@ export const DisciBox = ({ data }: Props) => {
             </CardHeader>
             <CardContent>
                 <div>id: {data.idDisciplina}</div>
-                <div>Professor: {data.nomeprofessor}</div>
+                <div>Professor: {data.nomeProfessor}</div>
                 <div>carga Horária: {data.cargaHoraria}</div>
             </CardContent>
 

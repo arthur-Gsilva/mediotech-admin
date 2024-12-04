@@ -1,5 +1,6 @@
 import { TurmaFormValues } from "@/components/turmas/ActionForm";
 import { req } from "../api";
+import { Turma } from "@/types/Turma";
 
 const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : ''
 
@@ -14,14 +15,21 @@ export const getTurmas = async () => {
 };
 
 export const getTurmasByProfessor = async (idProfessor: number) => {
-    const response = await req.get(`disciplinas/professor/${idProfessor}`, {
+    const response = await req.get(`/turmas`, {
         headers: {
             Authorization: `Bearer ${token}`,
         }
     })
 
-    const data = response.data;
-    return data
+    const data: Turma[] = response.data;
+
+    const turmaProf = data.filter((item) => 
+        item.curso && 
+        Array.isArray(item.curso.disciplinas) && 
+        item.curso.disciplinas.some((disciplina) => disciplina.professorId === idProfessor)
+    );
+
+    return turmaProf;
 }
 
 export const createTurma = async (values: TurmaFormValues) => {

@@ -42,7 +42,7 @@ const Page = () => {
 
     const { data: turmas, isLoading } = useQuery<Turma[]>({
         queryKey: ['turmas', token],
-        queryFn:  userTipo === 'PROFESSOR' ? () =>  getTurmasByProfessor(parseInt(userId as string)) : getTurmas,
+        queryFn:  userTipo === 'PROFESSOR' ? () =>  getTurmasByProfessor(Number(userId as string)) : getTurmas,
         enabled: !!token
     })
 

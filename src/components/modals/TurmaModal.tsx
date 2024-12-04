@@ -7,6 +7,7 @@ import { ActionForm } from "../estudantes/ActionForm"
 import { useQuery } from "@tanstack/react-query"
 import { User } from "@/types/Estudante"
 import { getAlunos } from "@/utils/api/user"
+import { EstudanteModal } from "./EstudanteModal"
 
 type Props = {
     isOpen: boolean,
@@ -17,6 +18,8 @@ type Props = {
 export const TurmaModal = ({ isOpen, onClose, data }: Props) => {
 
     const [isAlunoOpen, setIsAlunoOpen] = useState(false)
+    const [isDetailOpen, setIsDetailOpen] = useState(false);
+    const [selectedAluno, setSelectedAluno] = useState<User | null>(null)
 
     const [token, setToken] = useState<string | null>(null)
 
@@ -33,6 +36,10 @@ export const TurmaModal = ({ isOpen, onClose, data }: Props) => {
         enabled: !!token
     })
 
+    const openDetailsModal = (aluno: User) => {
+        setSelectedAluno(aluno)
+        setIsDetailOpen(true)
+    }
     const alunosByTurma = alunos?.filter((aluno) => aluno.turma.idturma === data.idturma)
 
     return(
@@ -72,11 +79,23 @@ export const TurmaModal = ({ isOpen, onClose, data }: Props) => {
                     <div className="h-[2px] w-full bg-primary my-2"></div>
                     <div className="flex flex-wrap gap-4">
                         {alunosByTurma?.map((aluno) => (
-                            <p key={aluno.codigo} className="w-[180px] overflow-hidden text-ellipsis whitespace-nowrap bg-primary text-white text-center rounded-md p-2 cursor-pointer">{aluno.nomeCompletoUser}</p>
+                            <p 
+                                key={aluno.codigo}
+                                onClick={() => openDetailsModal(aluno)}
+                                className="w-[180px] overflow-hidden text-ellipsis whitespace-nowrap bg-primary text-white text-center rounded-md p-2 cursor-pointer"
+                            >
+                                {aluno.nomeCompletoUser}
+                            </p>
                         ))}
                     </div>
                 </div>
             </DialogContent>
+
+            <EstudanteModal
+                isOpen={isDetailOpen}
+                onClose={setIsDetailOpen}
+                data={selectedAluno}
+            />
         </Dialog>
     )
 }

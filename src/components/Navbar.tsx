@@ -30,6 +30,7 @@ export const Navbar = () => {
         window.localStorage.removeItem('authToken');
         window.localStorage.removeItem('tipoUser');
         window.localStorage.removeItem('username');
+        window.localStorage.removeItem('idUser');
     
         router.push('/login');
     }
@@ -53,15 +54,15 @@ export const Navbar = () => {
 
             <nav className="[&>div]:flex [&>div]:gap-4 [&>div]:items-center [&>div]:text-xl [&>div]:cursor-pointer [&>div:hover]:bg-secondary [&>div]:p-2 [&>div]:rounded-lg flex flex-col gap-6">
 
-            {userTipo !== 'PROFESSOR' &&
-                <div
-                style={{ backgroundColor: pathname === '/paineis' ? '#F6A10A' : '' }}
-                onClick={() => redirect('paineis')}
-            >
-                <VscGraph />
-                Paineis
-            </div>
-            }
+                {userTipo !== 'PROFESSOR' &&
+                    <div
+                        style={{ backgroundColor: pathname === '/paineis' ? '#F6A10A' : '' }}
+                        onClick={() => redirect('paineis')}
+                    >
+                        <VscGraph />
+                        Paineis
+                    </div>
+                }
                 
                 <div style={{backgroundColor: pathname === '/turmas' ? '#F6A10A' : ''}} onClick={() => redirect('turmas')}>
                     <HiOutlineUserGroup />
@@ -71,14 +72,20 @@ export const Navbar = () => {
                     <LiaChalkboardTeacherSolid />
                     Disciplinas
                 </div>
-                <div style={{backgroundColor: pathname === '/estudantes' ? '#F6A10A' : ''}} onClick={() => redirect('estudantes')}>
-                    <PiStudent />
-                    Estudantes
-                </div>
-                <div style={{backgroundColor: pathname === '/colaboradores' ? '#F6A10A' : ''}} onClick={() => redirect('colaboradores')}>
-                    <PiShirtFoldedFill />
-                    Colaboradores
-                </div>
+
+                {userTipo !== 'PROFESSOR' &&
+                    <>
+                        <div style={{backgroundColor: pathname === '/estudantes' ? '#F6A10A' : ''}} onClick={() => redirect('estudantes')}>
+                            <PiStudent />
+                            Estudantes
+                        </div>
+                        <div style={{backgroundColor: pathname === '/colaboradores' ? '#F6A10A' : ''}} onClick={() => redirect('colaboradores')}>
+                            <PiShirtFoldedFill />
+                            Colaboradores
+                        </div>
+                    </>
+                } 
+                
                 <div style={{backgroundColor: pathname === '/comunicados' ? '#F6A10A' : ''}} onClick={() => redirect('comunicados')}>
                     <HiOutlineSpeakerphone />
                     Comunicados

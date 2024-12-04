@@ -3,7 +3,7 @@ export type Disciplina = {
     nomeDaDisciplina: string;
     detalhesAdicionais: string;
     cargaHoraria: string;
-    nomeprofessor: string;
+    nomeProfessor: string;
     contatoprofessor: string;
     professorId: number,
     idturma: number,

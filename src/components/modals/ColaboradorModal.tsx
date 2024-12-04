@@ -1,10 +1,10 @@
 import { User } from "@/types/Estudante"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog"
 import { useQuery } from "@tanstack/react-query"
-import { Disciplina } from "@/types/Disciplina"
 import { getTurmasByProfessor } from "@/utils/api/turma"
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
 import { useEffect, useState } from "react"
+import { Turma } from "@/types/Turma"
 
 type Props = {
     isOpen: boolean,
@@ -22,7 +22,7 @@ export const ColaboradorModal = ({ isOpen, onClose, data }: Props) => {
         }
     }, [])
 
-    const { data: turmas} = useQuery<Disciplina[]>({
+    const { data: turmas} = useQuery<Turma[]>({
         queryKey: ['turmas', token],
         queryFn: () => getTurmasByProfessor(data?.codigo as number),
         enabled: !!token
@@ -50,8 +50,8 @@ export const ColaboradorModal = ({ isOpen, onClose, data }: Props) => {
                                     <CardTitle>{turma.nomeTurma}</CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <div>ano: {turma.ano}</div>
-                                    <div>Disciplina: {turma.nomeDaDisciplina}</div>
+                                    <div>ano: {turma.anno}</div>
+                                    <div>Disciplina: {turma.curso.disciplinas[0].nomeDaDisciplina}</div>
                                 </CardContent>
                             </Card>
                         ))}

@@ -17,7 +17,7 @@ export const DisciplinaModal = ({ isOpen, onClose, data }: Props) => {
                 </DialogHeader>
                 <div className='flex flex-col gap-2'>
                     <p>Carga Horária: {data.cargaHoraria} Horas</p>
-                    <p>Professor: {data.nomeprofessor}</p>
+                    <p>Professor: {data.nomeProfessor}</p>
                     <p>Detalhes Adicionais: {data.detalhesAdicionais}</p>
                 </div>
 
