@@ -23,7 +23,6 @@ const Page = () => {
     const [selectedCola, setSelectedCola] = useState<User | null>(null)
     const [filtro, setFiltro] = useState<string>("")
     const [cargo, setCargo] = useState('')
-    const [turno, setTurno] = useState('')
     
     const router = useRouter();
     const [token, setToken] = useState<string | null>(null)
@@ -52,9 +51,8 @@ const Page = () => {
     const colaboradoresFiltrados = colaboradores?.filter(colaborador => {
         const nomeMatch = (colaborador.nomeCompletoUser || "").toLowerCase().includes(filtro.toLowerCase())
         const cursoMatch = cargo === 'all' || !cargo || colaborador.tipoUser.toLowerCase() === cargo.toLowerCase();
-        const turnoMatch = turno === 'all' || !turno || colaborador.turma.turno.toLowerCase() === turno.toLowerCase();
 
-        return nomeMatch && cursoMatch && turnoMatch
+        return nomeMatch && cursoMatch
     });
 
     const openEditModal = (cola: User) => {
@@ -90,7 +88,7 @@ const Page = () => {
                     <div className="h-1 w-full bg-primary"></div>
                 </CardHeader>
                 <CardContent >
-                    <Actions onCargoChange={setCargo} onTurnoChange={setTurno} onFiltroChange={setFiltro}/>
+                    <Actions onCargoChange={setCargo} onFiltroChange={setFiltro}/>
 
                     <div className="my-2 font-semibold text-xl">Total de Colaboradores: {colaboradoresFiltrados?.length}</div>
 

@@ -28,7 +28,6 @@ export const getAvaliacoes = async (idAluno: number) => {
             Authorization: `Bearer ${token}`
         }
     })
-
     const data = response.data;
     return data.data
 }

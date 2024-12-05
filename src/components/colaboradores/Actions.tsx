@@ -8,12 +8,11 @@ import { ActionForm } from "./ActionForm";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 
 type Props = {
-    onTurnoChange: (a: string) => void,
     onCargoChange: (a: string) => void,
     onFiltroChange: (a: string) => void
 }
 
-export const Actions = ({ onTurnoChange, onCargoChange, onFiltroChange }: Props) => {
+export const Actions = ({ onCargoChange, onFiltroChange }: Props) => {
 
     const [isOpen, setIsOpen] = useState(false);
 
@@ -38,19 +37,6 @@ export const Actions = ({ onTurnoChange, onCargoChange, onFiltroChange }: Props)
                         <SelectItem value="all">Todos</SelectItem>
                         <SelectItem value="professor">Professor</SelectItem>
                         <SelectItem value="coordenador">Coordenador</SelectItem>
-                        </SelectGroup>
-                    </SelectContent>
-                </Select>
-                <Select onValueChange={onTurnoChange}>
-                    <SelectTrigger className="max-w-[130px]">
-                        <SelectValue placeholder="Turno" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectGroup>
-                        <SelectItem value="all">Todos</SelectItem>
-                        <SelectItem value="manhã">Manhã</SelectItem>
-                        <SelectItem value="tarde">Tarde</SelectItem>
-                        <SelectItem value="noite">Noite</SelectItem>
                         </SelectGroup>
                     </SelectContent>
                 </Select>

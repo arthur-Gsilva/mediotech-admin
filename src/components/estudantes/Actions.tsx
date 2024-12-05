@@ -29,12 +29,12 @@ export const Actions = ({ onTurnoChange, onCursoChange, onFiltroChange }: Props)
                 </div>
                 <Select onValueChange={onCursoChange}>
                     <SelectTrigger className="max-w-[130px]">
-                        <SelectValue placeholder="Ano" />
+                        <SelectValue placeholder="Curso" />
                     </SelectTrigger>
                     <SelectContent>
                         <SelectGroup>
                         <SelectItem value="all">Todos</SelectItem>
-                        <SelectItem value="ADS">ADS</SelectItem>
+                        <SelectItem value="Analise e Desenvolvimento de Sistemas">ADS</SelectItem>
                         <SelectItem value="logistica">Logistica</SelectItem>
                         </SelectGroup>
                     </SelectContent>
